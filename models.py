@@ -44,7 +44,7 @@ class Ticket(Base):
     status_id = Column(Integer,ForeignKey("master_list_table.id"),nullable=False)
     created_by = Column(Integer,ForeignKey("users.id"),nullable=False)
     assigned_to = Column(Integer,ForeignKey("users.id"),nullable=True)
-    created_at = Column(DateTime,default=datetime.utcno)
+    created_at = Column(DateTime,default=datetime.utcnow)
     updated_at = Column(DateTime,default=datetime.utcnow,onupdate=datetime.utcnow)
     creator = relationship("User",foreign_keys=[created_by])
     assignee = relationship("User",foreign_keys=[assigned_to])

@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Master Data</title>
+</head>
+
+<body>
+
+    <h1>Master Data</h1>
+
+    <div style="display: flex; gap: 40px;">
+
+        <!-- LEFT SIDE -->
+
+        <div style="width: 40%;">
+
+            <h2>Master Categories</h2>
+
+            <form method="post" action="/master">
+
+                <input type="text" name="name" placeholder="Master name" required>
+
+                <button type="submit">
+                    Add Master
+                </button>
+
+            </form>
+
+            <br>
+
+            <table border="1">
+
+                <thead>
+                    <tr>
+                        <th>Name</th>
+                        <th>Tag Code</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+
+                    {% for master in masters %}
+
+                    <tr>
+
+                        <td>
+                            {{ master.name }}
+                        </td>
+
+                        <td>
+                            {{ master.tag_code }}
+                        </td>
+
+                        <td>
+                            <a href="/master?tag_code={{ master.tag_code }}">
+                                Manage
+                            </a>
+                            <form method="post" action="/master/{{ master.id }}/delete" style="display: inline;">
+                                <button type="submit">
+                                    Delete
+                                </button>
+                            </form>
+                        </td>
+
+                    </tr>
+
+                    {% endfor %}
+
+                </tbody>
+
+            </table>
+
+        </div>
+
+
+        <!-- RIGHT SIDE -->
+
+        <div style="width: 60%;">
+
+            {% if selected_master %}
+
+            <h2>{{ selected_master.name }}</h2>
+
+            <p>
+                Tag Code:
+                {{ selected_master.tag_code }}
+            </p>
+
+            {% if error == "duplicate" %}
+
+            <p>
+                This value already exists.
+            </p>
+
+            {% endif %}
+
+            <h3>Add Value</h3>
+
+            <form method="post" action="/master/{{ selected_master.tag_code }}/value">
+
+                <input type="text" name="value" placeholder="Enter value" required>
+
+                <button type="submit">
+                    Add
+                </button>
+
+            </form>
+
+            <h3>Values</h3>
+
+            {% if values %}
+
+            <ul>
+
+                {% for item in values %}
+
+                <li>
+                    {{ item.value }}
+                    <form method="post" action="/master/value/{{ item.id }}" style="display: inline;">
+                        <button type="submit">Delete</button>
+                    </form>
+                </li>
+
+                {% endfor %}
+
+            </ul>
+
+            {% else %}
+
+            <p>No values added yet.</p>
+
+            {% endif %}
+
+
+            {% else %}
+
+            <h2>Select a Master</h2>
+
+            <p>
+                Click Manage on a master category
+                to view its values.
+            </p>
+
+            {% endif %}
+
+        </div>
+
+</body>
+
+</html>
