@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>resolveDesk - User Dashboard</title>
+</head>
+
+<body>
+
+    <h1>User Dashboard</h1>
+
+    <h2>Welcome, {{ user.name }}</h2>
+
+    <br>
+
+    <a href="/tickets/create">
+        <button>Raise Ticket</button>
+    </a>
+
+    <form method="post" action="/logout" style="display: inline;">
+        <button type="submit">
+            Logout
+        </button>
+    </form>
+
+    <hr>
+
+    <h2>My Tickets</h2>
+
+    {% if tickets %}
+
+    <table border="1">
+
+        <thead>
+
+            <tr>
+                <th>ID</th>
+                <th>Title</th>
+                <th>Priority</th>
+                <th>Status</th>
+                <th>Assigned To</th>
+                <th>Created At</th>
+            </tr>
+
+        </thead>
+
+        <tbody>
+
+            {% for ticket in tickets %}
+
+            <tr>
+
+                <td>
+                    {{ ticket.id }}
+                </td>
+
+                <td>
+                    {{ ticket.title }}
+                </td>
+
+                <td>
+                    {{ ticket.priority.value }}
+                </td>
+
+                <td>
+                    {{ ticket.status.value }}
+                </td>
+                <td>
+                    {% if ticket.assignee %}
+                    {{ ticket.assignee.name }}
+                    {% else %}
+                    Not Assigned
+                    {% endif %}
+                </td>
+
+                <td>
+                    {{ ticket.created_at.strftime("%d-%m-%Y %I:%M %p") }}
+                </td>
+
+            </tr>
+
+            {% endfor %}
+
+        </tbody>
+
+    </table>
+
+    {% else %}
+
+    <p>
+        You haven't raised any tickets yet.
+    </p>
+
+    {% endif %}
+
+</body>
+
+</html>
