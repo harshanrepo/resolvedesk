@@ -39,6 +39,7 @@
                 <th>Priority</th>
                 <th>Status</th>
                 <th>Assigned To</th>
+                <th>Comments</th>
                 <th>Created At</th>
             </tr>
 
@@ -72,6 +73,18 @@
                     Not Assigned
                     {% endif %}
                 </td>
+                <td>
+                    <a href="/tickets/{{ ticket.id }}">
+                        <button type="button">
+                            Comments
+                        </button>
+                    </a>
+                </td>
+
+                <td>
+                    {{ ticket.created_at.strftime("%d-%m-%Y %I:%M %p") }}
+                </td>
+
 
                 <td>
                     {{ ticket.created_at.strftime("%d-%m-%Y %I:%M %p") }}

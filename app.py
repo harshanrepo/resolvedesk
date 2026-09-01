@@ -643,3 +643,126 @@ def assign_ticket(
         url="/dashboard",
         status_code=303
     )
+
+# Ticket Details
+@app.get("/tickets/{ticket_id}")
+def ticket_detail(
+    request: Request,
+    ticket_id: int
+):
+
+    user = get_current_user(request)
+
+    if not user:
+        return RedirectResponse(
+            url="/login",
+            status_code=303
+        )
+
+    db = SessionLocal()
+
+    ticket = db.query(
+        models.Ticket
+    ).options(
+        joinedload(models.Ticket.creator),
+        joinedload(models.Ticket.priority),
+        joinedload(models.Ticket.status),
+        joinedload(models.Ticket.assignee)
+    ).filter(
+        models.Ticket.id == ticket_id
+    ).first()
+
+    db.close()
+
+    if not ticket:
+        raise HTTPException(
+            status_code=404,
+            detail="Ticket not found"
+        )
+
+    # Normal user can only see their own ticket
+    role = get_user_role(user)
+
+    if role == "User" and ticket.created_by != user.id:
+        raise HTTPException(
+            status_code=403,
+            detail="You do not have permission to view this ticket"
+        )
+
+    # Admin and Support Staff can view any ticket
+    return templates.TemplateResponse(
+        name="ticket_detail.html",
+        request=request,
+        context={
+            "user": user,
+            "ticket": ticket
+        }
+    )
+
+# Add Comment
+@app.post("/tickets/{ticket_id}/comments")
+def add_comment(
+    request: Request,
+    ticket_id: int,
+    comment: str = Form(...)
+):
+
+    user = get_current_user(request)
+
+    if not user:
+        return RedirectResponse(
+            url="/login",
+            status_code=303
+        )
+
+    comment = comment.strip()
+
+    if not comment:
+        raise HTTPException(
+            status_code=400,
+            detail="Comment cannot be empty"
+        )
+
+    db = SessionLocal()
+
+    ticket = db.query(
+        models.Ticket
+    ).filter(
+        models.Ticket.id == ticket_id
+    ).first()
+
+    if not ticket:
+        db.close()
+
+        raise HTTPException(
+            status_code=404,
+            detail="Ticket not found"
+        )
+
+    # Normal user can comment only on their own ticket
+    role = get_user_role(user)
+
+    if role == "User" and ticket.created_by != user.id:
+
+        db.close()
+
+        raise HTTPException(
+            status_code=403,
+            detail="You do not have permission to comment on this ticket"
+        )
+
+    new_comment = models.Comment(
+        ticket_id=ticket.id,
+        user_id=user.id,
+        comment=comment
+    )
+
+    db.add(new_comment)
+    db.commit()
+
+    db.close()
+
+    return RedirectResponse(
+        url=f"/tickets/{ticket_id}",
+        status_code=303
+    )

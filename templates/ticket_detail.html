@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>resolveDesk - Ticket Details</title>
+</head>
+
+<body>
+
+    <h1>Ticket Details</h1>
+
+    <p>
+        <strong>Ticket ID:</strong>
+        {{ ticket.id }}
+    </p>
+
+    <p>
+        <strong>Title:</strong>
+        {{ ticket.title }}
+    </p>
+
+    <p>
+        <strong>Description:</strong>
+        {{ ticket.description }}
+    </p>
+
+    <p>
+        <strong>Priority:</strong>
+        {{ ticket.priority.value }}
+    </p>
+
+    <p>
+        <strong>Status:</strong>
+        {{ ticket.status.value }}
+    </p>
+
+    <p>
+        <strong>Created By:</strong>
+        {{ ticket.creator.name }}
+    </p>
+
+    <p>
+        <strong>Assigned To:</strong>
+
+        {% if ticket.assignee %}
+            {{ ticket.assignee.name }}
+        {% else %}
+            Not Assigned
+        {% endif %}
+
+    </p>
+
+    <p>
+        <strong>Created At:</strong>
+        {{ ticket.created_at.strftime("%d-%m-%Y %I:%M %p") }}
+    </p>
+
+    <p>
+        <strong>Updated At:</strong>
+        {{ ticket.updated_at.strftime("%d-%m-%Y %I:%M %p") }}
+    </p>
+
+    <hr>
+
+    <h2>Comments</h2>
+
+    <!-- Comments will be displayed here in Step 35 -->
+
+    <p>
+        No comments yet.
+    </p>
+
+    <hr>
+
+    <h2>Add Comment</h2>
+
+    <form method="post" action="/tickets/{{ ticket.id }}/comments">
+
+        <textarea
+            name="comment"
+            rows="5"
+            cols="50"
+            placeholder="Write your comment..."
+            required
+        ></textarea>
+
+        <br><br>
+
+        <button type="submit">
+            Add Comment
+        </button>
+
+    </form>
+
+    <br>
+
+    <a href="/dashboard">
+        Back to Dashboard
+    </a>
+
+</body>
+
+</html>
