@@ -1,105 +1,141 @@
 {% extends "base.html" %}
 
 {% block title %}
-    resolveDesk - User Dashboard
+resolveDesk - Dashboard
 {% endblock %}
 
 {% block content %}
 
-<body>
+<div class="dashboard-page">
 
-    <h1>User Dashboard</h1>
+    <!-- Header -->
+    <header class="dashboard-header">
 
-    <h2>Welcome, {{ user.name }}</h2>
+        <div class="brand">
+            <div class="logo">rD</div>
+            <h1>resolveDesk</h1>
+        </div>
 
-    <br>
+        <div class="header-right">
+            <span>Dashboard</span>
 
-    <a href="/tickets/create">
-        <button>Raise Ticket</button>
-    </a>
+            <form method="post" action="/logout">
+                <button type="submit" class="logout-btn">
+                    Logout
+                </button>
+            </form>
+        </div>
 
-    <form method="post" action="/logout" style="display: inline;">
-        <button type="submit">
-            Logout
-        </button>
-    </form>
+    </header>
 
-    <hr>
 
-    <h2>My Tickets</h2>
+    <!-- Dashboard Layout -->
+    <div class="dashboard-layout">
 
-    {% if tickets %}
+        <!-- Sidebar -->
+        <aside class="dashboard-sidebar">
 
-    <table border="1">
+            <a href="/tickets/create" class="raise-ticket-btn">
+                + Raise Ticket
+            </a>
 
-        <thead>
+        </aside>
 
-            <tr>
-                <th>ID</th>
-                <th>Title</th>
-                <th>Priority</th>
-                <th>Status</th>
-                <th>Assigned To</th>
-                <th>Comments</th>
-                <th>Created At</th>
-            </tr>
 
-        </thead>
+        <!-- Main Content -->
+        <main class="dashboard-main">
 
-        <tbody>
+            <div class="dashboard-card">
 
-            {% for ticket in tickets %}
+                <h2>Welcome, {{ user.name }}</h2>
 
-            <tr>
+                <h3>My Tickets</h3>
 
-                <td>
-                    {{ ticket.id }}
-                </td>
+                {% if tickets %}
 
-                <td>
-                    {{ ticket.title }}
-                </td>
+                    <div class="table-container">
 
-                <td>
-                    {{ ticket.priority.value }}
-                </td>
+                        <table class="tickets-table">
 
-                <td>
-                    {{ ticket.status.value }}
-                </td>
-                <td>
-                    {% if ticket.assignee %}
-                    {{ ticket.assignee.name }}
-                    {% else %}
-                    Not Assigned
-                    {% endif %}
-                </td>
-                <td>
-                    <a href="/tickets/{{ ticket.id }}">
-                        <button type="button">
-                            Comments
-                        </button>
-                    </a>
-                </td>
+                            <thead>
+                                <tr>
+                                    <th>ID</th>
+                                    <th>Title</th>
+                                    <th>Priority</th>
+                                    <th>Status</th>
+                                    <th>Assigned To</th>
+                                    <th>Comments</th>
+                                    <th>Created At</th>
+                                </tr>
+                            </thead>
 
-                <td>
-                    {{ ticket.created_at.strftime("%d-%m-%Y %I:%M %p") }}
-                </td>
+                            <tbody>
 
-            </tr>
+                                {% for ticket in tickets %}
 
-            {% endfor %}
+                                    <tr>
 
-        </tbody>
+                                        <td>{{ ticket.id }}</td>
 
-    </table>
+                                        <td>{{ ticket.title }}</td>
 
-    {% else %}
+                                        <td>{{ ticket.priority.value }}</td>
 
-    <p>
-        You haven't raised any tickets yet.
-    </p>
+                                        <td>
+                                            <span class="status-badge">
+                                                {{ ticket.status.value }}
+                                            </span>
+                                        </td>
 
-    {% endif %}
+                                        <td>
+                                            {% if ticket.assignee %}
+                                                {{ ticket.assignee.name }}
+                                            {% else %}
+                                                Not Assigned
+                                            {% endif %}
+                                        </td>
+
+                                        <td>
+                                            <a
+                                                href="/tickets/{{ ticket.id }}"
+                                                class="comments-btn"
+                                            >
+                                                Comments
+                                            </a>
+                                        </td>
+
+                                        <td>
+                                            {{ ticket.created_at.strftime("%d-%m-%Y %I:%M %p") }}
+                                        </td>
+
+                                    </tr>
+
+                                {% endfor %}
+
+                            </tbody>
+
+                        </table>
+
+                    </div>
+
+                {% else %}
+
+                    <div class="empty-state">
+
+                        <h3>No tickets yet</h3>
+
+                        <p>You haven't created any tickets yet.</p>
+
+                    </div>
+
+                {% endif %}
+
+            </div>
+
+        </main>
+
+    </div>
+
+</div>
 
 {% endblock %}

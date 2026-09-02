@@ -1,52 +1,75 @@
 {% extends "base.html" %}
 
 {% block title %}
-resolveDesk - Register
+resolveDesk - Login
 {% endblock %}
 
 {% block content %}
 
-<h1>Login</h1>
+<div class="auth-page">
 
-{% if error == "user not found" %}
-    <p>
-        User not found. Please check your email.
-    </p>
-{% elif error == "incorrect password" %}
-    <p>
-        Incorrect password. Please try again.
-    </p>
-{% endif %}
+    <div class="brand">
+        <div class="logo"><img src="{{ url_for('static', path='icons/favicon.svg') }}" alt="Logo"></div>
+        <h1>resolveDesk</h1>
+    </div>
 
-<form method="post" action="/login">
+    <div class="auth-card">
 
-    <label>Email:</label>
-    <input
-        type="email"
-        name="email"
-        required
-    >
+        <h2>Welcome back</h2>
 
-    <br><br>
+        <p class="auth-subtitle">
+            Login to your resolveDesk account.
+        </p>
 
-    <label>Password:</label>
-    <input
-        type="password"
-        name="password"
-        required
-    >
+        {% if error == "user not found" %}
 
-    <br><br>
+            <p class="error-message">
+                Invalid Email or Password. Please try again.
+            </p>
 
-    <button type="submit">
-        Login
-    </button>
+        {% elif error == "incorrect password" %}
 
-    <p>
-        Don't have an account?
-        <a href="/register">Register here</a>
-    </p>
+            <p class="error-message">
+                Invalid Email or Password. Please try again.
+            </p>
 
-</form>
+        {% endif %}
+
+        <form method="post" action="/login">
+
+            <div class="form-group">
+                <label>Email</label>
+
+                <input
+                    type="email"
+                    name="email"
+                    required
+                >
+            </div>
+
+            <div class="form-group">
+                <label>Password</label>
+
+                <input
+                    type="password"
+                    name="password"
+                    required
+                >
+            </div>
+
+            <button type="submit" class="primary-btn">
+                Login
+            </button>
+
+        </form>
+
+        <p class="auth-link">
+            Don't have an account?<span>
+            <a href="/register">Register here</a></span>
+        </p>
+
+    </div>
+
+</div>
 
 {% endblock %}
