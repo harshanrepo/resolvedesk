@@ -1,48 +1,52 @@
-<!DOCTYPE html>
-<html>
-<head>
-    <title>resolveDesk - Login</title>
-</head>
+{% extends "base.html" %}
 
-<body>
+{% block title %}
+resolveDesk - Register
+{% endblock %}
 
-    <h1>Login</h1>
-    {% if error == "user not found" %}
-        <p>
-            User not found. Please check your email.
-        </p>
-    {% elif error == "incorrect password" %}
-        <p>
-            Incorrect password. Please try again.
-        </p>
-    {% endif %}
+{% block content %}
 
-    <form method="post" action="/login">
+<h1>Login</h1>
 
-        <label>Email:</label>
-        <input
-            type="email"
-            name="email"
-            required
-        >
+{% if error == "user not found" %}
+    <p>
+        User not found. Please check your email.
+    </p>
+{% elif error == "incorrect password" %}
+    <p>
+        Incorrect password. Please try again.
+    </p>
+{% endif %}
 
-        <br><br>
+<form method="post" action="/login">
 
-        <label>Password:</label>
-        <input
-            type="password"
-            name="password"
-            required
-        >
+    <label>Email:</label>
+    <input
+        type="email"
+        name="email"
+        required
+    >
 
-        <br><br>
+    <br><br>
 
-        <button type="submit">
-            Login
-        </button>
-        <p>Don't have an account? <a href="/register">Register here</a></p>
+    <label>Password:</label>
+    <input
+        type="password"
+        name="password"
+        required
+    >
 
-    </form>
+    <br><br>
 
-</body>
-</html>
+    <button type="submit">
+        Login
+    </button>
+
+    <p>
+        Don't have an account?
+        <a href="/register">Register here</a>
+    </p>
+
+</form>
+
+{% endblock %}

@@ -1,9 +1,10 @@
-<!doctype html>
-<html>
+{% extends "base.html" %}
 
-<head>
-    <title>resolveDesk - Ticket Details</title>
-</head>
+{% block title %}
+    resolveDesk - Ticket Details
+{% endblock %}
+
+{% block content %}
 
 <body>
     <h1>Ticket Details</h1>
@@ -106,6 +107,4 @@
     <br />
 
     <a href="/dashboard"> Back to Dashboard </a>
-</body>
-
-</html>
+{% endblock %}

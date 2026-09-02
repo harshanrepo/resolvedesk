@@ -9,12 +9,13 @@ import models
 import os
 from dotenv import load_dotenv
 from dependencies import get_current_user,get_user_role,require_staff
-
+from fastapi.staticfiles import StaticFiles
 
 load_dotenv()
 SECRET_KEY = os.getenv("SECRET_KEY")
 
 app=FastAPI()
+app.mount("/static", StaticFiles(directory="static"), name="static")
 Base.metadata.create_all(bind=engine)
 templates=Jinja2Templates(directory="templates")
 app.add_middleware(

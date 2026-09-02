@@ -1,9 +1,10 @@
-<!DOCTYPE html>
-<html>
+{% extends "base.html" %}
 
-<head>
-    <title>resolveDesk - Staff Dashboard</title>
-</head>
+{% block title %}
+    resolveDesk - Staff Dashboard
+{% endblock %}
+
+{% block content %}
 
 <body>
 
@@ -18,6 +19,7 @@
         </button>
 
     </form>
+    <a href="/master">Manage Master Data</a>
 
     <hr>
 
@@ -190,6 +192,4 @@
 
     {% endif %}
 
-</body>
-
-</html>
+{% endblock %}
