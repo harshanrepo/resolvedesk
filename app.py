@@ -683,11 +683,29 @@ def ticket_detail(
     # Normal user can only see their own ticket
     role = get_user_role(user)
 
-    if role == "User" and ticket.created_by != user.id:
-        raise HTTPException(
-            status_code=403,
-            detail="You do not have permission to view this ticket"
-        )
+    can_comment = False
+    comment_message = None
+
+    if role == "User":
+        if ticket.created_by == user.id:
+            can_comment = True
+        else:
+            db.close()
+            raise HTTPException(
+                status_code=403,
+                detail="You do not have permission to view this ticket"
+            )
+
+    elif role == "Support Staff":
+        if ticket.assigned_to == user.id:
+            can_comment = True
+        else:
+            comment_message = "You can only comment on tickets assigned to you."
+
+    elif role == "Admin":
+        can_comment = True
+    comments = db.query(models.Comment).filter(models.Comment.ticket_id == ticket.id).order_by(models.Comment.created_at.asc()).all()
+
 
     # Admin and Support Staff can view any ticket
     return templates.TemplateResponse(
@@ -695,7 +713,10 @@ def ticket_detail(
         request=request,
         context={
             "user": user,
-            "ticket": ticket
+            "ticket": ticket,
+            "comments":comments,
+            "can_comment": can_comment,
+            "comment_message": comment_message
         }
     )
 
@@ -742,13 +763,30 @@ def add_comment(
     # Normal user can comment only on their own ticket
     role = get_user_role(user)
 
-    if role == "User" and ticket.created_by != user.id:
+    if role == "User":
+        if ticket.created_by != user.id:
+            db.close()
+            raise HTTPException(
+                status_code=403,
+                detail="You do not have permission to comment on this ticket"
+            )
 
+    elif role == "Support Staff":
+        if ticket.assigned_to != user.id:
+            db.close()
+            raise HTTPException(
+                status_code=403,
+                detail="You can only comment on tickets assigned to you"
+            )
+
+    elif role == "Admin":
+            pass
+
+    else:
         db.close()
-
         raise HTTPException(
             status_code=403,
-            detail="You do not have permission to comment on this ticket"
+            detail="You do not have permission to comment"
         )
 
     new_comment = models.Comment(

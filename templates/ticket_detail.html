@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+<!doctype html>
 <html>
 
 <head>
@@ -6,7 +6,6 @@
 </head>
 
 <body>
-
     <h1>Ticket Details</h1>
 
     <p>
@@ -42,12 +41,8 @@
     <p>
         <strong>Assigned To:</strong>
 
-        {% if ticket.assignee %}
-            {{ ticket.assignee.name }}
-        {% else %}
-            Not Assigned
-        {% endif %}
-
+        {% if ticket.assignee %} {{ ticket.assignee.name }} {% else %} Not
+        Assigned {% endif %}
     </p>
 
     <p>
@@ -60,44 +55,57 @@
         {{ ticket.updated_at.strftime("%d-%m-%Y %I:%M %p") }}
     </p>
 
-    <hr>
+    <hr />
 
     <h2>Comments</h2>
 
-    <!-- Comments will be displayed here in Step 35 -->
+    {% if comments %}
+    {% for comment in comments %}
 
-    <p>
-        No comments yet.
-    </p>
+    <div>
+        <p>
+            <strong>{{ comment.user.name }}</strong>
+        </p>
 
-    <hr>
+        <p>{{ comment.comment }}</p>
+
+        <small> {{ comment.created_at.strftime("%d-%m-%Y %I:%M %p") }} </small>
+    </div>
+
+    <hr />
+
+    {% endfor %} {% else %}
+
+    <p>No comments yet.</p>
+
+    {% endif %}
+
+
+    {% if can_comment %}
 
     <h2>Add Comment</h2>
 
     <form method="post" action="/tickets/{{ ticket.id }}/comments">
 
-        <textarea
-            name="comment"
-            rows="5"
-            cols="50"
-            placeholder="Write your comment..."
-            required
-        ></textarea>
+        <textarea name="comment" rows="5" cols="50" placeholder="Write your comment..." required></textarea>
 
         <br><br>
 
-        <button type="submit">
-            Add Comment
-        </button>
+        <button type="submit">Add Comment</button>
 
     </form>
 
-    <br>
+    {% elif comment_message %}
 
-    <a href="/dashboard">
-        Back to Dashboard
-    </a>
+    <p>
+        <strong>{{ comment_message }}</strong>
+    </p>
 
+    {% endif %}
+
+    <br />
+
+    <a href="/dashboard"> Back to Dashboard </a>
 </body>
 
 </html>

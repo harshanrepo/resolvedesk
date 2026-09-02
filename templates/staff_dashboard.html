@@ -25,151 +25,151 @@
 
     {% if tickets %}
 
-        <table border="1">
+    <table border="1">
 
-            <thead>
+        <thead>
 
-                <tr>
-                    <th>ID</th>
-                    <th>Title</th>
-                    <th>Description</th>
-                    <th>Created By</th>
-                    <th>Priority</th>
-                    <th>Status</th>
-                    <th>Assigned To</th>
-                    <th>Action</th>
-                    <th>Created At</th>
-                </tr>
+            <tr>
+                <th>ID</th>
+                <th>Title</th>
+                <th>Description</th>
+                <th>Created By</th>
+                <th>Priority</th>
+                <th>Status</th>
+                <th>Assigned To</th>
+                <th>Action</th>
+                <th>Comments</th>
+                <th>Created At</th>
+            </tr>
 
-            </thead>
+        </thead>
 
-            <tbody>
+        <tbody>
 
-                {% for ticket in tickets %}
+            {% for ticket in tickets %}
 
-                    <tr>
+            <tr>
 
-                        <!-- Ticket ID -->
+                <!-- Ticket ID -->
 
-                        <td>
-                            {{ ticket.id }}
-                        </td>
-
-
-                        <!-- Ticket Title -->
-
-                        <td>
-                            {{ ticket.title }}
-                        </td>
-                        
-                        <!-- Ticket Description -->
-                         <td>{{ ticket.description }}</td>
+                <td>
+                    {{ ticket.id }}
+                </td>
 
 
-                        <!-- Ticket Creator -->
+                <!-- Ticket Title -->
 
-                        <td>
-                            {{ ticket.creator.name }}
-                        </td>
+                <td>
+                    {{ ticket.title }}
+                </td>
 
-
-                        <!-- Priority -->
-
-                        <td>
-                            {{ ticket.priority.value }}
-                        </td>
+                <!-- Ticket Description -->
+                <td>{{ ticket.description }}</td>
 
 
-                        <!-- Status -->
+                <!-- Ticket Creator -->
 
-                        <td>
-                            {{ ticket.status.value }}
-                        </td>
+                <td>
+                    {{ ticket.creator.name }}
+                </td>
 
 
-                        <!-- Assigned Staff -->
+                <!-- Priority -->
 
-                        <td>
+                <td>
+                    {{ ticket.priority.value }}
+                </td>
 
-                            {% if ticket.assignee %}
 
-                                {{ ticket.assignee.name }}
+                <!-- Status -->
 
-                            {% else %}
+                <td>
+                    {{ ticket.status.value }}
+                </td>
 
+
+                <!-- Assigned Staff -->
+
+                <td>
+
+                    {% if ticket.assignee %}
+
+                    {{ ticket.assignee.name }}
+
+                    {% else %}
+
+                    Not Assigned
+
+                    {% endif %}
+
+                </td>
+
+
+                <!-- Assignment -->
+
+                <td>
+
+                    <form method="post" action="/admin/tickets/{{ ticket.id }}/assign">
+
+                        <select name="assigned_to">
+
+                            <!-- Remove assignment -->
+
+                            <option value="">
                                 Not Assigned
-
-                            {% endif %}
-
-                        </td>
+                            </option>
 
 
-                        <!-- Assignment -->
+                            <!-- Staff available for THIS ticket -->
 
-                        <td>
+                            {% for staff in available_staff_by_ticket[ticket.id] %}
 
-                            <form
-                                method="post"
-                                action="/admin/tickets/{{ ticket.id }}/assign"
-                            >
+                            <option value="{{ staff.id }}" {% if ticket.assigned_to==staff.id %} selected {% endif %}>
 
-                                <select name="assigned_to">
+                                {{ staff.name }}
 
-                                    <!-- Remove assignment -->
+                            </option>
 
-                                    <option value="">
-                                        Not Assigned
-                                    </option>
+                            {% endfor %}
+
+                        </select>
 
 
-                                    <!-- Staff available for THIS ticket -->
+                        <button type="submit">
+                            Save
+                        </button>
 
-                                    {% for staff in available_staff_by_ticket[ticket.id] %}
+                    </form>
 
-                                        <option
-                                            value="{{ staff.id }}"
-                                            {% if ticket.assigned_to == staff.id %}
-                                                selected
-                                            {% endif %}
-                                        >
+                </td>
 
-                                            {{ staff.name }}
-
-                                        </option>
-
-                                    {% endfor %}
-
-                                </select>
+                <!-- comment -->
+                <td>
+                    <a href="/tickets/{{ ticket.id }}">
+                        <button type="button">Comments</button>
+                    </a>
+                </td>
 
 
-                                <button type="submit">
-                                    Save
-                                </button>
+                <!-- Created Date -->
 
-                            </form>
+                <td>
+                    {{ ticket.created_at.strftime("%d-%m-%Y %I:%M %p") }}
+                </td>
 
-                        </td>
+            </tr>
 
+            {% endfor %}
 
-                        <!-- Created Date -->
+        </tbody>
 
-                        <td>
-                            {{ ticket.created_at.strftime("%d-%m-%Y %I:%M %p") }}
-                        </td>
-
-                    </tr>
-
-                {% endfor %}
-
-            </tbody>
-
-        </table>
+    </table>
 
     {% else %}
 
-        <p>
-            No tickets available.
-        </p>
+    <p>
+        No tickets available.
+    </p>
 
     {% endif %}
 
