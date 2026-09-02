@@ -49,6 +49,19 @@ def master_page(
 
     masters = db.query(models.MasterTable).all()
 
+    user = get_current_user(request)
+
+    if not user:
+        return RedirectResponse("/login", status_code=303)
+
+    role = get_user_role(user)
+
+    if role != "Admin":
+        raise HTTPException(
+            status_code=403,
+            detail="You do not have permission to access Master Data"
+        )
+
     selected_master = None
     values = []
 
@@ -358,7 +371,7 @@ def dashboard(request: Request):
             context={
                 "user": user,
                 "tickets": tickets,
-                "priorities": priorities
+                "priorities": priorities,
             }
         )
 
@@ -432,7 +445,8 @@ def dashboard(request: Request):
                 "user": user,
                 "tickets": tickets,
                 "available_staff_by_ticket": available_staff_by_ticket,
-                "statuses": statuses
+                "statuses": statuses,
+                "role": role
             }
         )
 

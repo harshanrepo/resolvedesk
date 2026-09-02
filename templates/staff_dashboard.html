@@ -31,9 +31,11 @@
         <!-- Sidebar -->
         <aside class="staff-sidebar">
 
-            <a href="/master" class="manage-master-btn">
-                Manage Master Data
-            </a>
+        {% if role == "Admin" %}
+        <a href="/master" class="manage-master-btn">
+            Manage Master Data
+        </a>
+        {% endif %}
 
         </aside>
 
