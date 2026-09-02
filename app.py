@@ -708,7 +708,9 @@ def ticket_detail(
         can_comment = True
 
     comments = db.query(
-        models.Comment
+    models.Comment
+    ).options(
+        joinedload(models.Comment.user)
     ).filter(
         models.Comment.ticket_id == ticket.id
     ).order_by(
