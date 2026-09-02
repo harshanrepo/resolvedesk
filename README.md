@@ -8,7 +8,7 @@ A support ticket management system built with **FastAPI**.
 
 ## 📌 About
 
-ResolveDesk is a beginner-friendly Help Desk web application where users can create and track support tickets, while support staff and administrators can manage tickets, update statuses, assign tickets, and respond to users.
+ResolveDesk is a Help Desk web application where users can create and track support tickets, while support staff and administrators can manage tickets, update statuses, assign tickets, and respond to users.
 
 The project is being built from scratch to understand how a complete web application works with **FastAPI, databases, authentication, CRUD operations, and server-side templates**.
 
