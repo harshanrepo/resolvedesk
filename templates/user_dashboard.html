@@ -29,20 +29,22 @@ resolveDesk - Dashboard
     </header>
 
 
-    <!-- Dashboard Layout -->
+    <!-- Dashboard -->
     <div class="dashboard-layout">
 
-        <!-- Sidebar -->
         <aside class="dashboard-sidebar">
 
-            <a href="/tickets/create" class="raise-ticket-btn">
+            <button
+                type="button"
+                class="raise-ticket-btn"
+                onclick="openTicketPanel()"
+            >
                 + Raise Ticket
-            </a>
+            </button>
 
         </aside>
 
 
-        <!-- Main Content -->
         <main class="dashboard-main">
 
             <div class="dashboard-card">
@@ -53,80 +55,79 @@ resolveDesk - Dashboard
 
                 {% if tickets %}
 
-                    <div class="table-container">
+                <div class="table-container">
 
-                        <table class="tickets-table">
+                    <table class="tickets-table">
 
-                            <thead>
-                                <tr>
-                                    <th>ID</th>
-                                    <th>Title</th>
-                                    <th>Priority</th>
-                                    <th>Status</th>
-                                    <th>Assigned To</th>
-                                    <th>Comments</th>
-                                    <th>Created At</th>
-                                </tr>
-                            </thead>
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>Title</th>
+                                <th>Priority</th>
+                                <th>Status</th>
+                                <th>Assigned To</th>
+                                <th>Comments</th>
+                                <th>Created At</th>
+                            </tr>
+                        </thead>
 
-                            <tbody>
+                        <tbody>
 
-                                {% for ticket in tickets %}
+                            {% for ticket in tickets %}
 
-                                    <tr>
+                            <tr>
 
-                                        <td>{{ ticket.id }}</td>
+                                <td>{{ ticket.id }}</td>
 
-                                        <td>{{ ticket.title }}</td>
+                                <td>{{ ticket.title }}</td>
 
-                                        <td>{{ ticket.priority.value }}</td>
+                                <td>
+                                    {{ ticket.priority.value }}
+                                </td>
 
-                                        <td>
-                                            <span class="status-badge">
-                                                {{ ticket.status.value }}
-                                            </span>
-                                        </td>
+                                <td>
+                                    <span class="status-badge">
+                                        {{ ticket.status.value }}
+                                    </span>
+                                </td>
 
-                                        <td>
-                                            {% if ticket.assignee %}
-                                                {{ ticket.assignee.name }}
-                                            {% else %}
-                                                Not Assigned
-                                            {% endif %}
-                                        </td>
+                                <td>
+                                    {% if ticket.assignee %}
+                                        {{ ticket.assignee.name }}
+                                    {% else %}
+                                        Not Assigned
+                                    {% endif %}
+                                </td>
 
-                                        <td>
-                                            <a
-                                                href="/tickets/{{ ticket.id }}"
-                                                class="comments-btn"
-                                            >
-                                                Comments
-                                            </a>
-                                        </td>
+                                <td>
+                                    <a
+                                        href="/tickets/{{ ticket.id }}"
+                                        class="comments-btn"
+                                    >
+                                        Comments
+                                    </a>
+                                </td>
 
-                                        <td>
-                                            {{ ticket.created_at.strftime("%d-%m-%Y %I:%M %p") }}
-                                        </td>
+                                <td>
+                                    {{ ticket.created_at.strftime("%d-%m-%Y %I:%M %p") }}
+                                </td>
 
-                                    </tr>
+                            </tr>
 
-                                {% endfor %}
+                            {% endfor %}
 
-                            </tbody>
+                        </tbody>
 
-                        </table>
+                    </table>
 
-                    </div>
+                </div>
 
                 {% else %}
 
-                    <div class="empty-state">
-
-                        <h3>No tickets yet</h3>
-
-                        <p>You haven't created any tickets yet.</p>
-
-                    </div>
+                <div class="empty-state">
+                    <h3>No tickets yet</h3>
+                    <p>You haven't created any tickets yet.</p>
+                </div>
 
                 {% endif %}
 
@@ -136,6 +137,135 @@ resolveDesk - Dashboard
 
     </div>
 
+
+    <!-- Overlay -->
+    <div
+        id="ticket-overlay"
+        class="ticket-overlay"
+        onclick="closeTicketPanel()"
+    ></div>
+
+
+    <!-- Raise Ticket Panel -->
+    <aside
+        id="ticket-panel"
+        class="ticket-panel"
+    >
+
+        <div class="ticket-panel-header">
+
+            <h2>Raise Ticket</h2>
+
+            <button
+                type="button"
+                class="close-ticket-btn"
+                onclick="closeTicketPanel()"
+            >
+                ×
+            </button>
+
+        </div>
+
+
+        <form
+            method="post"
+            action="/tickets/create"
+            class="ticket-form"
+        >
+
+            <div class="form-group">
+
+                <label for="title">
+                    Title
+                </label>
+
+                <input
+                    type="text"
+                    id="title"
+                    name="title"
+                    required
+                >
+
+            </div>
+
+
+            <div class="form-group">
+
+                <label for="description">
+                    Description
+                </label>
+
+                <textarea
+                    id="description"
+                    name="description"
+                    rows="6"
+                    required
+                ></textarea>
+
+            </div>
+
+
+            <div class="form-group">
+
+                <label for="priority">
+                    Priority
+                </label>
+
+                <select
+                    id="priority"
+                    name="priority_id"
+                    required
+                >
+
+                    <option value="" disabled selected>
+                        Select Priority
+                    </option>
+
+                    {% for priority in priorities %}
+
+                    <option value="{{ priority.id }}">
+                        {{ priority.value }}
+                    </option>
+
+                    {% endfor %}
+
+                </select>
+
+            </div>
+
+
+            <button
+                type="submit"
+                class="primary-btn"
+            >
+                Create Ticket
+            </button>
+
+        </form>
+
+    </aside>
+
 </div>
 
+<script>
+
+function openTicketPanel() {
+    document.getElementById("ticket-panel").classList.add("open");
+    document.getElementById("ticket-overlay").classList.add("open");
+}
+
+function closeTicketPanel() {
+    document.getElementById("ticket-panel").classList.remove("open");
+    document.getElementById("ticket-overlay").classList.remove("open");
+}
+document.addEventListener("keydown", function(event) {
+    if (event.key === "Escape") {
+        closeTicketPanel();
+    }
+});
+
+</script>
+
 {% endblock %}
+
+

@@ -348,6 +348,8 @@ def dashboard(request: Request):
             models.Ticket.created_by == user.id
         ).all()
 
+        priorities = db.query(models.MasterListTable).filter(models.MasterListTable.tag_code == "T0001").all()
+
         db.close()
 
         return templates.TemplateResponse(
@@ -355,7 +357,8 @@ def dashboard(request: Request):
             request=request,
             context={
                 "user": user,
-                "tickets": tickets
+                "tickets": tickets,
+                "priorities": priorities
             }
         )
 
@@ -462,43 +465,6 @@ def admin_tickets(request: Request):
         "message": "Welcome to the staff ticket management"
     }
 
-#create_ticket_page
-@app.get("/tickets/create")
-def create_ticket_page(request: Request):
-
-    user = get_current_user(request)
-
-    if not user:
-        return RedirectResponse(
-            url="/login",
-            status_code=303
-        )
-
-    db = SessionLocal()
-
-    priorities = db.query(
-        models.MasterListTable
-    ).filter(
-        models.MasterListTable.tag_code == "T0001"
-    ).all()
-
-    statuses = db.query(
-        models.MasterListTable
-    ).filter(
-        models.MasterListTable.tag_code == "T0002"
-    ).all()
-
-    db.close()
-
-    return templates.TemplateResponse(
-        name="create_ticket.html",
-        request=request,
-        context={
-            "user": user,
-            "priorities": priorities,
-            "statuses": statuses
-        }
-    )
 
 # create_ticket
 @app.post("/tickets/create")

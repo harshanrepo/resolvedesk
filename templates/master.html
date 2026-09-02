@@ -6,21 +6,43 @@
 
 {% block content %}
 
-<body>
+<div class="master-page">
 
-    <h1>Master Data</h1>
+    <!-- Header -->
+    <header class="master-header">
 
-    <div style="display: flex; gap: 40px;">
+        <div class="master-brand">
+            <div class="master-logo">rD</div>
+            <h1>Master Data</h1>
+        </div>
+
+        <form method="post" action="/logout">
+            <button type="submit" class="master-logout-btn">
+                Logout
+            </button>
+        </form>
+
+    </header>
+
+
+    <!-- Main Layout -->
+    <main class="master-layout">
 
         <!-- LEFT SIDE -->
-
-        <div style="width: 40%;">
+        <section class="master-sidebar">
 
             <h2>Master Categories</h2>
 
-            <form method="post" action="/master">
 
-                <input type="text" name="name" placeholder="Master name" required>
+            <!-- Add Master -->
+            <form method="post" action="/master" class="add-master-form">
+
+                <input
+                    type="text"
+                    name="name"
+                    placeholder="Master name"
+                    required
+                >
 
                 <button type="submit">
                     Add Master
@@ -28,124 +50,203 @@
 
             </form>
 
-            <br>
 
-            <table border="1">
+            <!-- Master List -->
+            <div class="master-table-container">
 
-                <thead>
-                    <tr>
-                        <th>Name</th>
-                        <th>Tag Code</th>
-                        <th>Action</th>
-                    </tr>
-                </thead>
+                <table class="master-table">
 
-                <tbody>
+                    <thead>
+                        <tr>
+                            <th>Name</th>
+                            <th>Tag Code</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
 
-                    {% for master in masters %}
 
-                    <tr>
+                    <tbody>
 
-                        <td>
-                            {{ master.name }}
-                        </td>
+                        {% for master in masters %}
 
-                        <td>
-                            {{ master.tag_code }}
-                        </td>
+                        <tr>
 
-                        <td>
-                            <a href="/master?tag_code={{ master.tag_code }}">
-                                Manage
-                            </a>
-                            <form method="post" action="/master/{{ master.id }}/delete" style="display: inline;">
-                                <button type="submit">
-                                    Delete
-                                </button>
-                            </form>
-                        </td>
+                            <td>
+                                {{ master.name }}
+                            </td>
 
-                    </tr>
+                            <td>
+                                {{ master.tag_code }}
+                            </td>
 
-                    {% endfor %}
+                            <td class="master-actions">
 
-                </tbody>
+                                <a
+                                    href="/master?tag_code={{ master.tag_code }}"
+                                    class="manage-btn"
+                                >
+                                    Manage
+                                </a>
 
-            </table>
 
-        </div>
+                                <form
+                                    method="post"
+                                    action="/master/{{ master.id }}/delete"
+                                >
+
+                                    <button
+                                        type="submit"
+                                        class="delete-btn"
+                                    >
+                                        Delete
+                                    </button>
+
+                                </form>
+
+                            </td>
+
+                        </tr>
+
+                        {% endfor %}
+
+                    </tbody>
+
+                </table>
+
+            </div>
+
+        </section>
 
 
         <!-- RIGHT SIDE -->
-
-        <div style="width: 60%;">
+        <section class="master-content">
 
             {% if selected_master %}
 
-            <h2>{{ selected_master.name }}</h2>
+                <!-- Selected Master -->
+                <div class="selected-master-header">
 
-            <p>
-                Tag Code:
-                {{ selected_master.tag_code }}
-            </p>
+                    <div>
 
-            {% if error == "duplicate" %}
+                        <h2>
+                            {{ selected_master.name }}
+                        </h2>
 
-            <p>
-                This value already exists.
-            </p>
+                        <p>
+                            Tag Code:
+                            <strong>{{ selected_master.tag_code }}</strong>
+                        </p>
 
-            {% endif %}
+                    </div>
 
-            <h3>Add Value</h3>
+                </div>
 
-            <form method="post" action="/master/{{ selected_master.tag_code }}/value">
 
-                <input type="text" name="value" placeholder="Enter value" required>
+                {% if error == "duplicate" %}
 
-                <button type="submit">
-                    Add
-                </button>
+                <p class="master-error">
+                    This value already exists.
+                </p>
 
-            </form>
+                {% endif %}
 
-            <h3>Values</h3>
 
-            {% if values %}
+                <!-- Add Value -->
+                <div class="add-value-section">
 
-            <ul>
+                    <h3>Add Value</h3>
 
-                {% for item in values %}
+                    <form
+                        method="post"
+                        action="/master/{{ selected_master.tag_code }}/value"
+                        class="add-value-form"
+                    >
 
-                <li>
-                    {{ item.value }}
-                    <form method="post" action="/master/value/{{ item.id }}" style="display: inline;">
-                        <button type="submit">Delete</button>
+                        <input
+                            type="text"
+                            name="value"
+                            placeholder="Enter value"
+                            required
+                        >
+
+                        <button type="submit">
+                            Add
+                        </button>
+
                     </form>
-                </li>
 
-                {% endfor %}
+                </div>
 
-            </ul>
+
+                <!-- Values -->
+                <div class="master-values-section">
+
+                    <h3>Values</h3>
+
+                    {% if values %}
+
+                    <div class="values-list">
+
+                        {% for item in values %}
+
+                        <div class="value-row">
+
+                            <span>
+                                {{ item.value }}
+                            </span>
+
+
+                            <form
+                                method="post"
+                                action="/master/value/{{ item.id }}"
+                            >
+
+                                <button
+                                    type="submit"
+                                    class="delete-btn"
+                                >
+                                    Delete
+                                </button>
+
+                            </form>
+
+                        </div>
+
+                        {% endfor %}
+
+                    </div>
+
+                    {% else %}
+
+                    <p class="no-values">
+                        No values added yet.
+                    </p>
+
+                    {% endif %}
+
+                </div>
+
 
             {% else %}
 
-            <p>No values added yet.</p>
+                <!-- Nothing Selected -->
+                <div class="master-empty-state">
+
+                    <h2>Select a Master</h2>
+
+                    <p>
+                        Click Manage on a master category
+                        to view its values.
+                    </p>
+
+                </div>
 
             {% endif %}
 
+        </section>
 
-            {% else %}
+    </main>
 
-            <h2>Select a Master</h2>
-
-            <p>
-                Click Manage on a master category
-                to view its values.
-            </p>
-
-            {% endif %}
-
-        </div>
+</div>
 
 {% endblock %}

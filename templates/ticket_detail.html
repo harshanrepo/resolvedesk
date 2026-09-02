@@ -1,110 +1,198 @@
 {% extends "base.html" %}
 
-{% block title %}
-    resolveDesk - Ticket Details
-{% endblock %}
+{% block title %}Ticket Details{% endblock %}
 
 {% block content %}
 
-<body>
-    <h1>Ticket Details</h1>
+<div class="ticket-detail-page">
 
-    <p>
-        <strong>Ticket ID:</strong>
-        {{ ticket.id }}
-    </p>
+    <!-- Header -->
+    <header class="dashboard-header">
 
-    <p>
-        <strong>Title:</strong>
-        {{ ticket.title }}
-    </p>
+        <div class="brand">
+            <div class="logo">rD</div>
+            <h1>Ticket Details</h1>
+        </div>
 
-    <p>
-        <strong>Description:</strong>
-        {{ ticket.description }}
-    </p>
+        <a href="/logout" class="logout-btn">
+            Logout
+        </a>
 
-    <p>
-        <strong>Priority:</strong>
-        {{ ticket.priority.value }}
-    </p>
+    </header>
 
-    <p>
-        <strong>Status:</strong>
-        {{ ticket.status.value }}
-    </p>
 
-    <p>
-        <strong>Created By:</strong>
-        {{ ticket.creator.name }}
-    </p>
+    <!-- Page Navigation -->
+    <div class="ticket-detail-navigation">
 
-    <p>
-        <strong>Assigned To:</strong>
+        <a href="/dashboard" class="dashboard-btn">
+            Dashboard
+        </a>
 
-        {% if ticket.assignee %} {{ ticket.assignee.name }} {% else %} Not
-        Assigned {% endif %}
-    </p>
-
-    <p>
-        <strong>Created At:</strong>
-        {{ ticket.created_at.strftime("%d-%m-%Y %I:%M %p") }}
-    </p>
-
-    <p>
-        <strong>Updated At:</strong>
-        {{ ticket.updated_at.strftime("%d-%m-%Y %I:%M %p") }}
-    </p>
-
-    <hr />
-
-    <h2>Comments</h2>
-
-    {% if comments %}
-    {% for comment in comments %}
-
-    <div>
-        <p>
-            <strong>{{ comment.user.name }}</strong>
-        </p>
-
-        <p>{{ comment.comment }}</p>
-
-        <small> {{ comment.created_at.strftime("%d-%m-%Y %I:%M %p") }} </small>
     </div>
 
-    <hr />
 
-    {% endfor %} {% else %}
+    <!-- Main Ticket Details -->
+    <main class="ticket-detail-container">
 
-    <p>No comments yet.</p>
+        <!-- LEFT: Comments -->
+        <section class="comments-section">
 
-    {% endif %}
+            <h2>Comments</h2>
+
+            <div class="comments-list">
+
+                {% if comments %}
+
+                {% for comment in comments %}
+
+                <div class="comment">
+
+                    <div class="comment-header">
+
+                        <span class="comment-author">
+                            {{ comment.user.name }} :
+                        </span>
+
+                        <span class="comment-date">
+                            {{ comment.created_at.strftime("%d-%m-%Y %I:%M %p") }}
+                        </span>
+
+                    </div>
+
+                    <p class="comment-text">
+                        {{ comment.comment }}
+                    </p>
+
+                </div>
+
+                {% endfor %}
+
+                {% else %}
+
+                <p class="no-comments">
+                    No comments yet.
+                </p>
+
+                {% endif %}
+
+            </div>
 
 
-    {% if can_comment %}
+            <!-- Add Comment -->
+            {% if can_comment %}
 
-    <h2>Add Comment</h2>
+            <form method="post" action="/tickets/{{ ticket.id }}/comments" class="comment-form">
 
-    <form method="post" action="/tickets/{{ ticket.id }}/comments">
+                <textarea name="comment" placeholder="Write your comment..." rows="5" required></textarea>
 
-        <textarea name="comment" rows="5" cols="50" placeholder="Write your comment..." required></textarea>
+                <button type="submit" class="primary-btn">
+                    Add comment
+                </button>
 
-        <br><br>
+            </form>
 
-        <button type="submit">Add Comment</button>
+            {% elif comment_message %}
 
-    </form>
+            <p class="comment-permission-message">
+                {{ comment_message }}
+            </p>
 
-    {% elif comment_message %}
+            {% endif %}
 
-    <p>
-        <strong>{{ comment_message }}</strong>
-    </p>
+        </section>
 
-    {% endif %}
 
-    <br />
+        <!-- RIGHT: Ticket Details -->
+        <aside class="ticket-info-section">
 
-    <a href="/dashboard"> Back to Dashboard </a>
+            <h2>Details</h2>
+
+
+            <div class="ticket-info">
+
+                <div class="info-row">
+                    <strong>Ticket ID:</strong>
+                    <span>{{ ticket.id }}</span>
+                </div>
+
+                <div class="info-row">
+                    <strong>Title:</strong>
+                    <span>{{ ticket.title }}</span>
+                </div>
+
+                <div class="info-row">
+                    <strong>Description:</strong>
+                    <span>{{ ticket.description }}</span>
+                </div>
+
+                <div class="info-row">
+                    <strong>Created At:</strong>
+                    <span>
+                        {{ ticket.created_at.strftime("%d-%m-%Y %I:%M %p") }}
+                    </span>
+                </div>
+
+                <div class="info-row">
+                    <strong>Updated At:</strong>
+                    <span>
+                        {{ ticket.updated_at.strftime("%d-%m-%Y %I:%M %p") }}
+                    </span>
+                </div>
+
+                <div class="info-row">
+                    <strong>Created By:</strong>
+                    <span>{{ ticket.creator.name }}</span>
+                </div>
+
+                <div class="info-row">
+                    <strong>Assigned To:</strong>
+
+                    <span>
+                        {% if ticket.assignee %}
+                        {{ ticket.assignee.name }}
+                        {% else %}
+                        Unassigned
+                        {% endif %}
+                    </span>
+
+                </div>
+
+            </div>
+
+
+            <!-- Properties -->
+            <div class="ticket-properties">
+
+                <h3>Properties</h3>
+
+
+                <div class="property">
+
+                    <strong>Priority</strong>
+
+                    <div class="property-value">
+                        {{ ticket.priority.value }}
+                    </div>
+
+                </div>
+
+
+                <div class="property">
+
+                    <strong>Status</strong>
+
+                    <div class="property-value">
+                        {{ ticket.status.value }}
+                    </div>
+
+                </div>
+
+            </div>
+
+        </aside>
+
+    </main>
+
+</div>
+
 {% endblock %}
