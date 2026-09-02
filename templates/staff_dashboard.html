@@ -84,8 +84,25 @@
                 <!-- Status -->
 
                 <td>
-                    {{ ticket.status.value }}
-                </td>
+    <form method="post" action="/admin/tickets/{{ ticket.id }}/status">
+
+        <select name="status_id">
+
+            {% for status in statuses %}
+
+                <option value="{{ status.id }}"
+                    {% if ticket.status_id == status.id %}selected{% endif %}>
+                    {{ status.value }}
+                </option>
+
+            {% endfor %}
+
+        </select>
+
+        <button type="submit">Save</button>
+
+    </form>
+</td>
 
 
                 <!-- Assigned Staff -->

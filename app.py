@@ -317,7 +317,6 @@ def logout(request: Request):
         status_code=303
     )
 
-#dashboard
 # dashboard
 @app.get("/dashboard")
 def dashboard(request: Request):
@@ -384,6 +383,10 @@ def dashboard(request: Request):
             models.MasterListTable.value == "Support Staff"
         ).all()
 
+        # change status
+
+        statuses = db.query(models.MasterListTable).filter(models.MasterListTable.tag_code == "T0002").all()
+
         # Available staff for each ticket
         available_staff_by_ticket = {}
 
@@ -424,7 +427,8 @@ def dashboard(request: Request):
             context={
                 "user": user,
                 "tickets": tickets,
-                "available_staff_by_ticket": available_staff_by_ticket
+                "available_staff_by_ticket": available_staff_by_ticket,
+                "statuses": statuses
             }
         )
 
@@ -662,7 +666,7 @@ def ticket_detail(
     db = SessionLocal()
 
     ticket = db.query(
-        models.Ticket
+    models.Ticket
     ).options(
         joinedload(models.Ticket.creator),
         joinedload(models.Ticket.priority),
@@ -672,15 +676,13 @@ def ticket_detail(
         models.Ticket.id == ticket_id
     ).first()
 
-    db.close()
-
     if not ticket:
+        db.close()
         raise HTTPException(
             status_code=404,
             detail="Ticket not found"
         )
 
-    # Normal user can only see their own ticket
     role = get_user_role(user)
 
     can_comment = False
@@ -704,7 +706,16 @@ def ticket_detail(
 
     elif role == "Admin":
         can_comment = True
-    comments = db.query(models.Comment).filter(models.Comment.ticket_id == ticket.id).order_by(models.Comment.created_at.asc()).all()
+
+    comments = db.query(
+        models.Comment
+    ).filter(
+        models.Comment.ticket_id == ticket.id
+    ).order_by(
+        models.Comment.created_at.asc()
+    ).all()
+
+    db.close()
 
 
     # Admin and Support Staff can view any ticket
@@ -802,5 +813,72 @@ def add_comment(
 
     return RedirectResponse(
         url=f"/tickets/{ticket_id}",
+        status_code=303
+    )
+
+#change status
+@app.post("/admin/tickets/{ticket_id}/status")
+def update_ticket_status(
+    request: Request,
+    ticket_id: int,
+    status_id: int = Form(...)
+):
+    user = get_current_user(request)
+
+    if not user:
+        return RedirectResponse("/login", status_code=303)
+
+    role = get_user_role(user)
+
+    if role not in ["Admin", "Support Staff"]:
+        raise HTTPException(
+            status_code=403,
+            detail="You do not have permission to change ticket status"
+        )
+
+    db = SessionLocal()
+
+    ticket = db.query(models.Ticket).filter(
+        models.Ticket.id == ticket_id
+    ).first()
+
+    if not ticket:
+        db.close()
+        raise HTTPException(
+            status_code=404,
+            detail="Ticket not found"
+        )
+
+    status = db.query(
+        models.MasterListTable
+    ).filter(
+        models.MasterListTable.id == status_id,
+        models.MasterListTable.tag_code == "T0002"
+    ).first()
+
+    if not status:
+        db.close()
+        raise HTTPException(
+            status_code=400,
+            detail="Invalid status"
+        )
+
+    current_status = db.query(models.MasterListTable).filter(models.MasterListTable.id == ticket.status_id).first()
+    
+    if status.value == "Close":
+        if current_status.value != "Resolved":
+            db.close()
+            raise HTTPException(
+                status_code=400,
+                detail="Ticket must be Resolved before it can be Closed"
+            )
+
+    ticket.status_id = status.id
+    
+    db.commit()
+    db.close()
+
+    return RedirectResponse(
+        "/dashboard",
         status_code=303
     )
