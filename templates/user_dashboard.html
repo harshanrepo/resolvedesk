@@ -6,21 +6,21 @@ resolveDesk - Dashboard
 
 {% block content %}
 
-<div class="dashboard-page">
+<div>
 
     <!-- Header -->
-    <header class="dashboard-header">
+    <header>
 
-        <div class="brand">
-            <div class="logo">rD</div>
+        <div>
+
             <h1>resolveDesk</h1>
         </div>
 
-        <div class="header-right">
+        <div>
             <span>Dashboard</span>
 
             <form method="post" action="/logout">
-                <button type="submit" class="logout-btn">
+                <button type="submit">
                     Logout
                 </button>
             </form>
@@ -30,34 +30,92 @@ resolveDesk - Dashboard
 
 
     <!-- Dashboard -->
-    <div class="dashboard-layout">
+    <div>
 
-        <aside class="dashboard-sidebar">
+        <aside>
 
-            <button
-                type="button"
-                class="raise-ticket-btn"
-                onclick="openTicketPanel()"
-            >
+            <button type="button" onclick="openTicketPanel()">
                 + Raise Ticket
             </button>
 
         </aside>
 
 
-        <main class="dashboard-main">
+        <main>
 
-            <div class="dashboard-card">
+            <div>
 
                 <h2>Welcome, {{ user.name }}</h2>
 
+                <div class="summary-cards">
+
+                    <div class="summary-card">
+                        <span>Total Tickets</span>
+                        <strong>{{ total_tickets }}</strong>
+                    </div>
+
+                    <div class="summary-card">
+                        <span>Open</span>
+                        <strong>{{ open_tickets }}</strong>
+                    </div>
+
+                    <div class="summary-card">
+                        <span>In Progress</span>
+                        <strong>{{ in_progress_tickets }}</strong>
+                    </div>
+
+                    <div class="summary-card">
+                        <span>Resolved</span>
+                        <strong>{{ resolved_tickets }}</strong>
+                    </div>
+
+                    <div class="summary-card">
+                        <span>Closed</span>
+                        <strong>{{ closed_tickets }}</strong>
+                    </div>
+
+                </div>
+
                 <h3>My Tickets</h3>
+
+                
+
+                <form method="get" action="/dashboard" class="ticket-filters">
+
+                    <input type="text" name="search" placeholder="Search by Ticket ID or Title"
+                        value="{{ search or '' }}">
+
+                    <select name="status">
+                        <option value="" disabled selected hidden>All Status</option>
+
+                        {% for status in statuses %}
+                        <option value="{{ status.value }}" {% if status_filter==status.value %}selected{% endif %}>
+                            {{ status.value }}
+                        </option>
+                        {% endfor %}
+                    </select>
+
+                    <select name="priority_id">
+                        <option value="" disabled selected hidden>All Priority</option>
+
+                        {% for priority in priorities %}
+                        <option value="{{ priority.id }}" {% if priority_filter==priority.id %}selected{% endif %}>
+                            {{ priority.value }}
+                        </option>
+                        {% endfor %}
+                    </select>
+
+                    <button type="submit">Filter</button>
+
+                    <a href="/dashboard" class="clear-filter">Clear</a>
+
+                </form>
 
                 {% if tickets %}
 
-                <div class="table-container">
+                <div>
 
-                    <table class="tickets-table">
+                    <table>
 
                         <thead>
                             <tr>
@@ -86,30 +144,27 @@ resolveDesk - Dashboard
                                 </td>
 
                                 <td>
-                                    <span class="status-badge">
+                                    <span>
                                         {{ ticket.status.value }}
                                     </span>
                                 </td>
 
                                 <td>
                                     {% if ticket.assignee %}
-                                        {{ ticket.assignee.name }}
+                                    {{ ticket.assignee.name }}
                                     {% else %}
-                                        Not Assigned
+                                    Not Assigned
                                     {% endif %}
                                 </td>
 
                                 <td>
-                                    <a
-                                        href="/tickets/{{ ticket.id }}"
-                                        class="comments-btn"
-                                    >
+                                    <a href="/tickets/{{ ticket.id }}">
                                         Comments
                                     </a>
                                 </td>
 
                                 <td>
-                                    {{ ticket.created_at.strftime("%d-%m-%Y %I:%M %p") }}
+                                    {{ time_ago(ticket.created_at) }}
                                 </td>
 
                             </tr>
@@ -124,7 +179,7 @@ resolveDesk - Dashboard
 
                 {% else %}
 
-                <div class="empty-state">
+                <div>
                     <h3>No tickets yet</h3>
                     <p>You haven't created any tickets yet.</p>
                 </div>
@@ -139,83 +194,54 @@ resolveDesk - Dashboard
 
 
     <!-- Overlay -->
-    <div
-        id="ticket-overlay"
-        class="ticket-overlay"
-        onclick="closeTicketPanel()"
-    ></div>
+    <div id="ticket-overlay" onclick="closeTicketPanel()"></div>
 
 
     <!-- Raise Ticket Panel -->
-    <aside
-        id="ticket-panel"
-        class="ticket-panel"
-    >
+    <aside id="ticket-panel">
 
-        <div class="ticket-panel-header">
+        <div>
 
             <h2>Raise Ticket</h2>
 
-            <button
-                type="button"
-                class="close-ticket-btn"
-                onclick="closeTicketPanel()"
-            >
+            <button type="button" onclick="closeTicketPanel()">
                 ×
             </button>
 
         </div>
 
 
-        <form
-            method="post"
-            action="/tickets/create"
-            class="ticket-form"
-        >
+        <form method="post" action="/tickets/create">
 
-            <div class="form-group">
+            <div>
 
                 <label for="title">
                     Title
                 </label>
 
-                <input
-                    type="text"
-                    id="title"
-                    name="title"
-                    required
-                >
+                <input type="text" id="title" name="title" required>
 
             </div>
 
 
-            <div class="form-group">
+            <div>
 
                 <label for="description">
                     Description
                 </label>
 
-                <textarea
-                    id="description"
-                    name="description"
-                    rows="6"
-                    required
-                ></textarea>
+                <textarea id="description" name="description" rows="6" required></textarea>
 
             </div>
 
 
-            <div class="form-group">
+            <div>
 
                 <label for="priority">
                     Priority
                 </label>
 
-                <select
-                    id="priority"
-                    name="priority_id"
-                    required
-                >
+                <select id="priority" name="priority_id" required>
 
                     <option value="" disabled selected>
                         Select Priority
@@ -234,10 +260,7 @@ resolveDesk - Dashboard
             </div>
 
 
-            <button
-                type="submit"
-                class="primary-btn"
-            >
+            <button type="submit">
                 Create Ticket
             </button>
 
@@ -249,23 +272,21 @@ resolveDesk - Dashboard
 
 <script>
 
-function openTicketPanel() {
-    document.getElementById("ticket-panel").classList.add("open");
-    document.getElementById("ticket-overlay").classList.add("open");
-}
-
-function closeTicketPanel() {
-    document.getElementById("ticket-panel").classList.remove("open");
-    document.getElementById("ticket-overlay").classList.remove("open");
-}
-document.addEventListener("keydown", function(event) {
-    if (event.key === "Escape") {
-        closeTicketPanel();
+    function openTicketPanel() {
+        document.getElementById("ticket-panel").classList.add("open");
+        document.getElementById("ticket-overlay").classList.add("open");
     }
-});
+
+    function closeTicketPanel() {
+        document.getElementById("ticket-panel").classList.remove("open");
+        document.getElementById("ticket-overlay").classList.remove("open");
+    }
+    document.addEventListener("keydown", function (event) {
+        if (event.key === "Escape") {
+            closeTicketPanel();
+        }
+    });
 
 </script>
 
 {% endblock %}
-
-

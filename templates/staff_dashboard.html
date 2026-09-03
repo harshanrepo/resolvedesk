@@ -1,23 +1,23 @@
 {% extends "base.html" %}
 
 {% block title %}
-    resolveDesk - Staff Dashboard
+resolveDesk - Staff Dashboard
 {% endblock %}
 
 {% block content %}
 
-<div class="staff-dashboard-page">
+<div>
 
     <!-- Header -->
-    <header class="staff-header">
+    <header>
 
-        <div class="staff-brand">
-            <div class="staff-logo">rD</div>
+        <div>
+
             <h1>Dashboard</h1>
         </div>
 
         <form method="post" action="/logout">
-            <button type="submit" class="staff-logout-btn">
+            <button type="submit">
                 Logout
             </button>
         </form>
@@ -26,35 +26,116 @@
 
 
     <!-- Dashboard Layout -->
-    <div class="staff-dashboard-layout">
+    <div>
 
         <!-- Sidebar -->
-        <aside class="staff-sidebar">
+        <aside>
 
-        {% if role == "Admin" %}
-        <a href="/master" class="manage-master-btn">
-            Manage Master Data
-        </a>
-        {% endif %}
+            {% if role == "Support Staff" %}
+            <a href="/my-assigned-tickets">
+                My Assigned Tickets
+            </a>
+            {% endif %}
+
+            {% if role == "Admin" %}
+            <a href="/master">
+                Manage Master Data
+            </a>
+            {% endif %}
 
         </aside>
 
 
         <!-- Main Content -->
-        <main class="staff-main">
+        <main>
 
-            <div class="staff-card">
+            <div>
 
                 <h2>Welcome, {{ user.name }}</h2>
 
+                <div class="summary-cards">
+
+                    <div class="summary-card">
+                        <span>Total Tickets</span>
+                        <strong>{{ total_tickets }}</strong>
+                    </div>
+
+                    <div class="summary-card">
+                        <span>Open</span>
+                        <strong>{{ open_tickets }}</strong>
+                    </div>
+
+                    <div class="summary-card">
+                        <span>In Progress</span>
+                        <strong>{{ in_progress_tickets }}</strong>
+                    </div>
+
+                    <div class="summary-card">
+                        <span>Resolved</span>
+                        <strong>{{ resolved_tickets }}</strong>
+                    </div>
+
+                    <div class="summary-card">
+                        <span>Closed</span>
+                        <strong>{{ closed_tickets }}</strong>
+                    </div>
+
+                </div>
+
                 <h3>All Tickets</h3>
+
+                
+
+                <form method="get" action="/dashboard" class="ticket-filters">
+
+                    <input type="text" name="search" placeholder="Search by ID, title or creator"
+                        value="{{ search or '' }}">
+
+                    <select name="status">
+                        <option value="" disabled selected hidden>All Status</option>
+
+                        {% for status in statuses %}
+                        <option value="{{ status.value }}" {% if status_filter==status.value %}selected{% endif %}>
+                            {{ status.value }}
+                        </option>
+                        {% endfor %}
+                    </select>
+
+                    <select name="priority_id">
+                        <option value="" disabled selected hidden>All Priority</option>
+
+                        {% for priority in priorities %}
+                        <option value="{{ priority.id }}" {% if priority_filter==priority.id %}selected{% endif %}>
+                            {{ priority.value }}
+                        </option>
+                        {% endfor %}
+                    </select>
+
+                    {% if role == "Admin" %}
+                <select name="assigned_to">
+                    <option value="">All Staff</option>
+
+                    {% for staff in support_staff %}
+                    <option value="{{ staff.id }}" {% if assigned_to_filter==staff.id %}selected{% endif %}>
+                        {{ staff.name }}
+                    </option>
+                    {% endfor %}
+                </select>
+                {% endif %}
+
+
+                    <button type="submit">Filter</button>
+
+                    <a href="/dashboard" class="clear-filter">Clear</a>
+
+                </form>
 
 
                 {% if tickets %}
 
-                <div class="staff-table-container">
+                <div>
 
-                    <table class="staff-tickets-table">
+                    <table>
 
                         <thead>
                             <tr>
@@ -65,8 +146,6 @@
                                 <th>Priority</th>
                                 <th>Status</th>
                                 <th>Assigned To</th>
-                                <th>Action</th>
-                                <th>Comments</th>
                                 <th>Created At</th>
                             </tr>
                         </thead>
@@ -111,22 +190,14 @@
                                 <!-- Status -->
                                 <td>
 
-                                    <form
-                                        method="post"
-                                        action="/admin/tickets/{{ ticket.id }}/status"
-                                        class="staff-inline-form"
-                                    >
+                                    <form method="post" action="/admin/tickets/{{ ticket.id }}/status">
 
                                         <select name="status_id">
 
                                             {% for status in statuses %}
 
-                                            <option
-                                                value="{{ status.id }}"
-                                                {% if ticket.status_id == status.id %}
-                                                selected
-                                                {% endif %}
-                                            >
+                                            <option value="{{ status.id }}" {% if ticket.status_id==status.id %}
+                                                selected {% endif %}>
                                                 {{ status.value }}
                                             </option>
 
@@ -143,26 +214,14 @@
                                 </td>
 
 
-                                <!-- Assigned To -->
-                                <td>
-
-                                    {% if ticket.assignee %}
-                                        {{ ticket.assignee.name }}
-                                    {% else %}
-                                        Not Assigned
-                                    {% endif %}
-
-                                </td>
 
 
                                 <!-- Assignment -->
                                 <td>
 
-                                    <form
-                                        method="post"
-                                        action="/admin/tickets/{{ ticket.id }}/assign"
-                                        class="staff-inline-form"
-                                    >
+                                    {% if role == "Admin" %}
+
+                                    <form method="post" action="/admin/tickets/{{ ticket.id }}/assign">
 
                                         <select name="assigned_to">
 
@@ -170,15 +229,10 @@
                                                 Not Assigned
                                             </option>
 
-
                                             {% for staff in available_staff_by_ticket[ticket.id] %}
 
-                                            <option
-                                                value="{{ staff.id }}"
-                                                {% if ticket.assigned_to == staff.id %}
-                                                selected
-                                                {% endif %}
-                                            >
+                                            <option value="{{ staff.id }}" {% if ticket.assigned_to==staff.id %}
+                                                selected {% endif %}>
                                                 {{ staff.name }}
                                             </option>
 
@@ -186,32 +240,27 @@
 
                                         </select>
 
-
                                         <button type="submit">
                                             Save
                                         </button>
 
                                     </form>
 
-                                </td>
+                                    {% else %}
 
+                                    {% if ticket.assignee %}
+                                    {{ ticket.assignee.name }}
+                                    {% else %}
+                                    Not Assigned
+                                    {% endif %}
 
-                                <!-- Comments -->
-                                <td>
-
-                                    <a
-                                        href="/tickets/{{ ticket.id }}"
-                                        class="staff-comments-btn"
-                                    >
-                                        Comments
-                                    </a>
+                                    {% endif %}
 
                                 </td>
-
 
                                 <!-- Created At -->
                                 <td>
-                                    {{ ticket.created_at.strftime("%d-%m-%Y %I:%M %p") }}
+                                    {{ time_ago(ticket.created_at) }}
                                 </td>
 
                             </tr>
@@ -226,7 +275,7 @@
 
                 {% else %}
 
-                <div class="staff-empty-state">
+                <div>
                     <h3>No tickets available</h3>
                     <p>There are currently no tickets to display.</p>
                 </div>

@@ -21,7 +21,7 @@ resolveDesk - Login
             Login to your resolveDesk account.
         </p>
 
-        {% if error == "user not found" %}
+        {% if error %}
 
             <p class="error-message">
                 Invalid Email or Password. Please try again.
@@ -64,8 +64,8 @@ resolveDesk - Login
         </form>
 
         <p class="auth-link">
-            Don't have an account?<span>
-            <a href="/register">Register here</a></span>
+            Don't have an account?<span><b>
+            <a href="/register">Register here</a></b>   </span>
         </p>
 
     </div>

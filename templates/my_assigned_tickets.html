@@ -1,0 +1,201 @@
+{% extends "base.html" %}
+
+{% block title %}
+resolveDesk - My Assigned Tickets
+{% endblock %}
+
+{% block content %}
+
+<div class="staff-dashboard-page">
+
+    <!-- Header -->
+    <header class="staff-header">
+
+        <div class="staff-brand">
+            <h1>My Assigned Tickets</h1>
+        </div>
+
+        <form method="post" action="/logout">
+            <button type="submit" class="staff-logout-btn">
+                Logout
+            </button>
+        </form>
+
+    </header>
+
+
+    <!-- Dashboard Layout -->
+    <div class="staff-dashboard-layout">
+
+        <!-- Sidebar -->
+        <aside class="staff-sidebar">
+
+            <a href="/dashboard" class="manage-master-btn">
+                Dashboard
+            </a>
+
+        </aside>
+
+
+        <!-- Main Content -->
+        <main class="staff-main">
+
+            <div class="staff-card">
+
+                <h2>Welcome, {{ user.name }}</h2>
+
+                <h3>My Assigned Tickets</h3>
+
+                <div class="summary-cards">
+
+                    <div class="summary-card">
+                        <span>Total Tickets</span>
+                        <strong>{{ total_tickets }}</strong>
+                    </div>
+
+                    <div class="summary-card">
+                        <span>Open</span>
+                        <strong>{{ open_tickets }}</strong>
+                    </div>
+
+                    <div class="summary-card">
+                        <span>In Progress</span>
+                        <strong>{{ in_progress_tickets }}</strong>
+                    </div>
+
+                    <div class="summary-card">
+                        <span>Resolved</span>
+                        <strong>{{ resolved_tickets }}</strong>
+                    </div>
+
+                    <div class="summary-card">
+                        <span>Closed</span>
+                        <strong>{{ closed_tickets }}</strong>
+                    </div>
+
+                </div>
+
+                <form method="get" action="/my-assigned-tickets" class="ticket-filters">
+
+                    <input type="text" name="search" placeholder="Search by ID or title" value="{{ search or '' }}">
+
+                    <select name="status">
+                        <option value="">All Status</option>
+
+                        {% for status in statuses %}
+                        <option value="{{ status.value }}" {% if status_filter==status.value %}selected{% endif %}>
+                            {{ status.value }}
+                        </option>
+                        {% endfor %}
+                    </select>
+
+                    <select name="priority_id">
+                        <option value="">All Priority</option>
+
+                        {% for priority in priorities %}
+                        <option value="{{ priority.id }}" {% if priority_filter==priority.id %}selected{% endif %}>
+                            {{ priority.value }}
+                        </option>
+                        {% endfor %}
+                    </select>
+
+                    <button type="submit">Filter</button>
+
+                    <a href="/my-assigned-tickets" class="clear-filter">Clear</a>
+
+                </form>
+
+
+                {% if tickets %}
+
+                <div class="staff-table-container">
+
+                    <table class="staff-tickets-table">
+
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>Title</th>
+                                <th>Description</th>
+                                <th>Created By</th>
+                                <th>Priority</th>
+                                <th>Status</th>
+                                <th>Comments</th>
+                                <th>Created At</th>
+                            </tr>
+                        </thead>
+
+
+                        <tbody>
+
+                            {% for ticket in tickets %}
+
+                            <tr>
+
+                                <td>
+                                    {{ ticket.id }}
+                                </td>
+
+                                <td>
+                                    {{ ticket.title }}
+                                </td>
+
+                                <td>
+                                    {{ ticket.description }}
+                                </td>
+
+                                <td>
+                                    {{ ticket.creator.name }}
+                                </td>
+
+                                <td>
+                                    {{ ticket.priority.value }}
+                                </td>
+
+                                <td>
+                                    {{ ticket.status.value }}
+                                </td>
+
+                                <td>
+                                    <a href="/tickets/{{ ticket.id }}" class="staff-comments-btn">
+                                        Comments
+                                    </a>
+                                </td>
+
+                                <td>
+                                    {{ time_ago(ticket.created_at) }}
+                                </td>
+
+                            </tr>
+
+                            {% endfor %}
+
+                        </tbody>
+
+                    </table>
+
+                </div>
+
+                {% else %}
+
+                <div class="staff-empty-state">
+
+                    <h3>No assigned tickets</h3>
+
+                    <p>
+                        You currently have no tickets assigned to you.
+                    </p>
+
+                </div>
+
+                {% endif %}
+
+            </div>
+
+        </main>
+
+    </div>
+
+</div>
+
+{% endblock %}

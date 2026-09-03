@@ -4,17 +4,16 @@
 
 {% block content %}
 
-<div class="ticket-detail-page">
+<div>
 
     <!-- Header -->
-    <header class="dashboard-header">
+    <header>
 
-        <div class="brand">
-            <div class="logo">rD</div>
+        <div>
             <h1>Ticket Details</h1>
         </div>
 
-        <a href="/logout" class="logout-btn">
+        <a href="/logout">
             Logout
         </a>
 
@@ -22,9 +21,9 @@
 
 
     <!-- Page Navigation -->
-    <div class="ticket-detail-navigation">
+    <div>
 
-        <a href="/dashboard" class="dashboard-btn">
+        <a href="/dashboard">
             Dashboard
         </a>
 
@@ -32,34 +31,34 @@
 
 
     <!-- Main Ticket Details -->
-    <main class="ticket-detail-container">
+    <main>
 
         <!-- LEFT: Comments -->
-        <section class="comments-section">
+        <section>
 
             <h2>Comments</h2>
 
-            <div class="comments-list">
+            <div>
 
                 {% if comments %}
 
                 {% for comment in comments %}
 
-                <div class="comment">
+                <div>
 
-                    <div class="comment-header">
+                    <div>
 
-                        <span class="comment-author">
+                        <span>
                             {{ comment.user.name }} :
                         </span>
 
-                        <span class="comment-date">
-                            {{ comment.created_at.strftime("%d-%m-%Y %I:%M %p") }}
+                        <span>
+                            {{ time_ago(comment.created_at) }}
                         </span>
 
                     </div>
 
-                    <p class="comment-text">
+                    <p>
                         {{ comment.comment }}
                     </p>
 
@@ -69,7 +68,7 @@
 
                 {% else %}
 
-                <p class="no-comments">
+                <p>
                     No comments yet.
                 </p>
 
@@ -81,11 +80,11 @@
             <!-- Add Comment -->
             {% if can_comment %}
 
-            <form method="post" action="/tickets/{{ ticket.id }}/comments" class="comment-form">
+            <form method="post" action="/tickets/{{ ticket.id }}/comments">
 
                 <textarea name="comment" placeholder="Write your comment..." rows="5" required></textarea>
 
-                <button type="submit" class="primary-btn">
+                <button type="submit">
                     Add comment
                 </button>
 
@@ -93,7 +92,7 @@
 
             {% elif comment_message %}
 
-            <p class="comment-permission-message">
+            <p>
                 {{ comment_message }}
             </p>
 
@@ -103,48 +102,48 @@
 
 
         <!-- RIGHT: Ticket Details -->
-        <aside class="ticket-info-section">
+        <aside>
 
             <h2>Details</h2>
 
 
-            <div class="ticket-info">
+            <div>
 
-                <div class="info-row">
+                <div>
                     <strong>Ticket ID:</strong>
                     <span>{{ ticket.id }}</span>
                 </div>
 
-                <div class="info-row">
+                <div>
                     <strong>Title:</strong>
                     <span>{{ ticket.title }}</span>
                 </div>
 
-                <div class="info-row">
+                <div>
                     <strong>Description:</strong>
                     <span>{{ ticket.description }}</span>
                 </div>
 
-                <div class="info-row">
+                <div>
                     <strong>Created At:</strong>
                     <span>
-                        {{ ticket.created_at.strftime("%d-%m-%Y %I:%M %p") }}
+                        {{ time_ago(ticket.created_at) }}
                     </span>
                 </div>
 
-                <div class="info-row">
+                <div>
                     <strong>Updated At:</strong>
                     <span>
-                        {{ ticket.updated_at.strftime("%d-%m-%Y %I:%M %p") }}
+                        {{ time_ago(ticket.updated_at) }}
                     </span>
                 </div>
 
-                <div class="info-row">
+                <div>
                     <strong>Created By:</strong>
                     <span>{{ ticket.creator.name }}</span>
                 </div>
 
-                <div class="info-row">
+                <div>
                     <strong>Assigned To:</strong>
 
                     <span>
@@ -161,27 +160,27 @@
 
 
             <!-- Properties -->
-            <div class="ticket-properties">
+            <div>
 
                 <h3>Properties</h3>
 
 
-                <div class="property">
+                <div>
 
                     <strong>Priority</strong>
 
-                    <div class="property-value">
+                    <div>
                         {{ ticket.priority.value }}
                     </div>
 
                 </div>
 
 
-                <div class="property">
+                <div>
 
                     <strong>Status</strong>
 
-                    <div class="property-value">
+                    <div>
                         {{ ticket.status.value }}
                     </div>
 

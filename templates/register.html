@@ -21,7 +21,7 @@ resolveDesk - Register
             Create an account to start using resolveDesk.
         </p>
 
-        {% if error == "email_exists" %}
+        {% if error %}
             <p class="error-message">
                 Email already registered. Please use another email.
             </p>
@@ -82,8 +82,8 @@ resolveDesk - Register
         </form>
 
         <p class="auth-link">
-            Already have an account?<span>
-            <a href="/login">Login here</a></span>
+            Already have an account?<span><b>
+            <a href="/login">Login here</b></a></span>
         </p>
 
     </div>

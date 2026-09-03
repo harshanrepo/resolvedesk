@@ -6,18 +6,17 @@
 
 {% block content %}
 
-<div class="master-page">
+<div>
 
     <!-- Header -->
-    <header class="master-header">
+    <header>
 
-        <div class="master-brand">
-            <div class="master-logo">rD</div>
+        <div>
             <h1>Master Data</h1>
         </div>
 
         <form method="post" action="/logout">
-            <button type="submit" class="master-logout-btn">
+            <button type="submit">
                 Logout
             </button>
         </form>
@@ -26,16 +25,16 @@
 
 
     <!-- Main Layout -->
-    <main class="master-layout">
+    <main>
 
         <!-- LEFT SIDE -->
-        <section class="master-sidebar">
+        <section>
 
             <h2>Master Categories</h2>
 
 
             <!-- Add Master -->
-            <form method="post" action="/master" class="add-master-form">
+            <form method="post" action="/master">
 
                 <input
                     type="text"
@@ -52,9 +51,9 @@
 
 
             <!-- Master List -->
-            <div class="master-table-container">
+            <div>
 
-                <table class="master-table">
+                <table>
 
                     <thead>
                         <tr>
@@ -79,11 +78,10 @@
                                 {{ master.tag_code }}
                             </td>
 
-                            <td class="master-actions">
+                            <td>
 
                                 <a
                                     href="/master?tag_code={{ master.tag_code }}"
-                                    class="manage-btn"
                                 >
                                     Manage
                                 </a>
@@ -96,7 +94,6 @@
 
                                     <button
                                         type="submit"
-                                        class="delete-btn"
                                     >
                                         Delete
                                     </button>
@@ -119,12 +116,12 @@
 
 
         <!-- RIGHT SIDE -->
-        <section class="master-content">
+        <section>
 
             {% if selected_master %}
 
                 <!-- Selected Master -->
-                <div class="selected-master-header">
+                <div>
 
                     <div>
 
@@ -144,7 +141,7 @@
 
                 {% if error == "duplicate" %}
 
-                <p class="master-error">
+                <p>
                     This value already exists.
                 </p>
 
@@ -152,14 +149,13 @@
 
 
                 <!-- Add Value -->
-                <div class="add-value-section">
+                <div>
 
                     <h3>Add Value</h3>
 
                     <form
                         method="post"
                         action="/master/{{ selected_master.tag_code }}/value"
-                        class="add-value-form"
                     >
 
                         <input
@@ -179,17 +175,17 @@
 
 
                 <!-- Values -->
-                <div class="master-values-section">
+                <div>
 
                     <h3>Values</h3>
 
                     {% if values %}
 
-                    <div class="values-list">
+                    <div>
 
                         {% for item in values %}
 
-                        <div class="value-row">
+                        <div>
 
                             <span>
                                 {{ item.value }}
@@ -203,7 +199,6 @@
 
                                 <button
                                     type="submit"
-                                    class="delete-btn"
                                 >
                                     Delete
                                 </button>
@@ -218,7 +213,7 @@
 
                     {% else %}
 
-                    <p class="no-values">
+                    <p>
                         No values added yet.
                     </p>
 
@@ -230,7 +225,7 @@
             {% else %}
 
                 <!-- Nothing Selected -->
-                <div class="master-empty-state">
+                <div>
 
                     <h2>Select a Master</h2>
 
