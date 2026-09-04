@@ -1,6 +1,6 @@
 import bcrypt
 import models
-from datetime import datetime
+from datetime import datetime, timezone
 
 def hash_password(password):
     password_bytes = password.encode("utf-8")
@@ -30,7 +30,12 @@ def get_master_by_name(db, name):
 
 
 def time_ago(created_at):
-    now = datetime.now()
+    # Database stores UTC time as a naive datetime
+    if created_at.tzinfo is None:
+        created_at = created_at.replace(tzinfo=timezone.utc)
+
+    # Current UTC time
+    now = datetime.now(timezone.utc)
 
     difference = now - created_at
 

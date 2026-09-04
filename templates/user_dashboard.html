@@ -4,120 +4,241 @@
 resolveDesk - Dashboard
 {% endblock %}
 
+{% block css %}
+<link rel="stylesheet" href="{{ url_for('static', path='dashboard.css') }}">
+{% endblock %}
+
 {% block content %}
 
-<div>
+<div class="dashboard-page">
 
     <!-- Header -->
-    <header>
+    <header class="dashboard-header">
 
-        <div>
+        <div class="brand">
+            <div class="logo">
+                <img src="{{ url_for('static', path='icons/favicon.svg') }}" alt="resolveDesk">
+            </div>
 
-            <h1>resolveDesk</h1>
+            <div>
+                <h1>resolveDesk</h1>
+                <span>Help Desk Portal</span>
+            </div>
         </div>
 
-        <div>
-            <span>Dashboard</span>
+        <div class="header-right">
 
-            <form method="post" action="/logout">
-                <button type="submit">
-                    Logout
-                </button>
-            </form>
+            <div class="user-info">
+                <span class="user-name">{{ user.name }}</span>
+                <span class="user-role">User</span>
+            </div>
+
+            <form method="post" action="/logout" class="header-logout-form">
+    <button type="submit" class="header-logout-btn">
+        Logout
+    </button>
+</form>
+
         </div>
 
     </header>
 
 
-    <!-- Dashboard -->
-    <div>
+    <!-- Dashboard Layout -->
+    <div class="dashboard-layout">
 
-        <aside>
+        <!-- Sidebar -->
+        <aside class="dashboard-sidebar">
 
-            <button type="button" onclick="openTicketPanel()">
-                + Raise Ticket
-            </button>
+            <nav class="sidebar-nav">
+                <a href="/dashboard" class="sidebar-nav-item active">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <rect x="3" y="3" width="7" height="7" rx="1"></rect>
+                        <rect x="14" y="3" width="7" height="7" rx="1"></rect>
+                        <rect x="14" y="14" width="7" height="7" rx="1"></rect>
+                        <rect x="3" y="14" width="7" height="7" rx="1"></rect>
+                    </svg>
+                    Dashboard
+                </a>
+            </nav>
+
+            <form method="post" action="/logout" class="sidebar-logout-form">
+                <button type="submit" class="logout-btn">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path>
+                        <polyline points="16 17 21 12 16 7"></polyline>
+                        <line x1="21" y1="12" x2="9" y2="12"></line>
+                    </svg>
+                    Logout
+                </button>
+            </form>
 
         </aside>
 
 
-        <main>
+        <!-- Main Content -->
+        <main class="dashboard-main">
 
-            <div>
+            <!-- Welcome -->
+            <section class="welcome-section">
 
-                <h2>Welcome, {{ user.name }}</h2>
+                <div class="welcome-text">
+                    <div>
+                        <h2>
+                            Welcome, {{ user.name }}
+                        </h2>
 
-                <div class="summary-cards">
-
-                    <div class="summary-card">
-                        <span>Total Tickets</span>
-                        <strong>{{ total_tickets }}</strong>
+                        <p class="welcome-subtext">
+                            Track and manage your support requests.
+                        </p>
                     </div>
+                </div>
 
-                    <div class="summary-card">
-                        <span>Open</span>
-                        <strong>{{ open_tickets }}</strong>
-                    </div>
+                <button
+                    type="button"
+                    class="raise-ticket-btn"
+                    onclick="openTicketPanel()"
+                >
+                    + Raise Ticket
+                </button>
 
-                    <div class="summary-card">
-                        <span>In Progress</span>
-                        <strong>{{ in_progress_tickets }}</strong>
-                    </div>
+            </section>
 
-                    <div class="summary-card">
-                        <span>Resolved</span>
-                        <strong>{{ resolved_tickets }}</strong>
-                    </div>
 
-                    <div class="summary-card">
-                        <span>Closed</span>
-                        <strong>{{ closed_tickets }}</strong>
+            <!-- Summary Cards -->
+            <section class="summary-cards">
+
+                <div class="summary-card">
+                    <span>Total Ticket</span>
+                    <strong>{{ total_tickets }}</strong>
+                </div>
+
+                <div class="summary-card">
+                    <span>Open</span>
+                    <strong>{{ open_tickets }}</strong>
+                </div>
+
+                <div class="summary-card">
+                    <span>In Progress</span>
+                    <strong>{{ in_progress_tickets }}</strong>
+                </div>
+
+                <div class="summary-card">
+                    <span>Resolved</span>
+                    <strong>{{ resolved_tickets }}</strong>
+                </div>
+
+                <div class="summary-card">
+                    <span>Closed</span>
+                    <strong>{{ closed_tickets }}</strong>
+                </div>
+
+            </section>
+
+
+            <!-- My Tickets -->
+            <section class="tickets-section">
+
+                <div class="section-header">
+
+                    <div>
+                        <h3>My Tickets</h3>
                     </div>
 
                 </div>
 
-                <h3>My Tickets</h3>
 
-                
+                <!-- Search & Filters -->
+                <form method="get" action="/dashboard" class="filter-bar">
 
-                <form method="get" action="/dashboard" class="ticket-filters">
+                    <div class="filter-group filter-search">
+                        <label>Search</label>
+                        <div class="search-input-wrap">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <circle cx="11" cy="11" r="8"></circle>
+                                <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+                            </svg>
+                            <input
+                                type="text"
+                                name="search"
+                                placeholder="Search tickets..."
+                                value="{{ search or '' }}"
+                            >
+                        </div>
+                    </div>
 
-                    <input type="text" name="search" placeholder="Search by Ticket ID or Title"
-                        value="{{ search or '' }}">
+                    <div class="filter-group">
+                        <label>Status</label>
+                        <select name="status">
 
-                    <select name="status">
-                        <option value="" disabled selected hidden>All Status</option>
+                            <option value="" disabled selected hidden>
+                                All Status
+                            </option>
 
-                        {% for status in statuses %}
-                        <option value="{{ status.value }}" {% if status_filter==status.value %}selected{% endif %}>
-                            {{ status.value }}
-                        </option>
-                        {% endfor %}
-                    </select>
+                            {% for status in statuses %}
 
-                    <select name="priority_id">
-                        <option value="" disabled selected hidden>All Priority</option>
+                            <option
+                                value="{{ status.value }}"
+                                {% if status_filter == status.value %}
+                                selected
+                                {% endif %}
+                            >
+                                {{ status.value }}
+                            </option>
 
-                        {% for priority in priorities %}
-                        <option value="{{ priority.id }}" {% if priority_filter==priority.id %}selected{% endif %}>
-                            {{ priority.value }}
-                        </option>
-                        {% endfor %}
-                    </select>
+                            {% endfor %}
 
-                    <button type="submit">Filter</button>
+                        </select>
+                    </div>
 
-                    <a href="/dashboard" class="clear-filter">Clear</a>
+                    <div class="filter-group">
+                        <label>Priority</label>
+                        <select name="priority_id">
+
+                            <option value="" disabled selected hidden>
+                                All Priorities
+                            </option>
+
+                            {% for priority in priorities %}
+
+                            <option
+                                value="{{ priority.id }}"
+                                {% if priority_filter == priority.id %}
+                                selected
+                                {% endif %}
+                            >
+                                {{ priority.value }}
+                            </option>
+
+                            {% endfor %}
+
+                        </select>
+                    </div>
+
+
+                    <button type="submit" class="filter-btn">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <polygon points="22 3 2 3 10 12.46 10 19 14 21 14 12.46 22 3"></polygon>
+                        </svg>
+                        Filter
+                    </button>
+
+                    <a href="/dashboard" class="clear-btn">
+                        Clear
+                    </a>
 
                 </form>
 
+
+                <!-- Ticket Table -->
                 {% if tickets %}
 
-                <div>
+                <div class="table-container">
 
-                    <table>
+                    <table class="tickets-table">
 
                         <thead>
+
                             <tr>
                                 <th>ID</th>
                                 <th>Title</th>
@@ -125,9 +246,11 @@ resolveDesk - Dashboard
                                 <th>Status</th>
                                 <th>Assigned To</th>
                                 <th>Comments</th>
-                                <th>Created At</th>
+                                <th>Created</th>
                             </tr>
+
                         </thead>
+
 
                         <tbody>
 
@@ -135,35 +258,58 @@ resolveDesk - Dashboard
 
                             <tr>
 
-                                <td>{{ ticket.id }}</td>
-
-                                <td>{{ ticket.title }}</td>
-
                                 <td>
-                                    {{ ticket.priority.value }}
+                                    #{{ ticket.id }}
+                                </td>
+
+                                <td class="ticket-title-cell">
+                                    <span class="ticket-title">{{ ticket.title }}</span>
+                                    <span class="ticket-desc">{{ ticket.description }}</span>
                                 </td>
 
                                 <td>
-                                    <span>
-                                        {{ ticket.status.value }}
+                                    <span class="priority-badge priority-{{ ticket.priority.value|lower }}">
+                                        {{ ticket.priority.value }}
                                     </span>
                                 </td>
 
                                 <td>
+
+                                    <span class="status-badge status-{{ ticket.status.value|lower|replace(' ', '-') }}">
+                                        {{ ticket.status.value }}
+                                    </span>
+
+                                </td>
+
+                                <td>
+
                                     {% if ticket.assignee %}
-                                    {{ ticket.assignee.name }}
+                                        <span class="assignee">
+                                            <span class="assignee-dot"></span>
+                                            {{ ticket.assignee.name }}
+                                        </span>
                                     {% else %}
-                                    Not Assigned
+                                        <span class="not-assigned">
+                                            Not Assigned
+                                        </span>
                                     {% endif %}
+
                                 </td>
 
                                 <td>
-                                    <a href="/tickets/{{ ticket.id }}">
-                                        Comments
+
+                                    <a
+                                        href="/tickets/{{ ticket.id }}"
+                                        class="view-ticket-btn"
+                                    >
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                            <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path>
+                                        </svg>
                                     </a>
+
                                 </td>
 
-                                <td>
+                                <td class="created-cell">
                                     {{ time_ago(ticket.created_at) }}
                                 </td>
 
@@ -179,113 +325,175 @@ resolveDesk - Dashboard
 
                 {% else %}
 
-                <div>
+                <!-- Empty State -->
+                <div class="empty-state">
+
                     <h3>No tickets yet</h3>
-                    <p>You haven't created any tickets yet.</p>
+
+                    <p>
+                        You haven't created any support tickets.
+                    </p>
+
+                    <button
+                        type="button"
+                        class="raise-ticket-btn"
+                        onclick="openTicketPanel()"
+                    >
+                        + Raise Your First Ticket
+                    </button>
+
                 </div>
 
                 {% endif %}
 
-            </div>
+            </section>
 
         </main>
 
     </div>
 
-
-    <!-- Overlay -->
-    <div id="ticket-overlay" onclick="closeTicketPanel()"></div>
+</div>
 
 
-    <!-- Raise Ticket Panel -->
-    <aside id="ticket-panel">
+<!-- Overlay -->
+<div
+    id="ticket-overlay"
+    onclick="closeTicketPanel()"
+></div>
 
-        <div>
 
-            <h2>Raise Ticket</h2>
+<!-- Raise Ticket Panel -->
+<aside id="ticket-panel">
 
-            <button type="button" onclick="closeTicketPanel()">
-                ×
-            </button>
+    <div class="ticket-panel-header">
+
+        <h2>Raise Ticket</h2>
+
+        <button
+            type="button"
+            class="close-ticket-btn"
+            onclick="closeTicketPanel()"
+        >
+            ×
+        </button>
+
+    </div>
+
+
+    <form
+        method="post"
+        action="/tickets/create"
+        class="ticket-form"
+    >
+
+        <div class="form-group">
+
+            <label for="title">
+                Title
+            </label>
+
+            <input
+                type="text"
+                id="title"
+                name="title"
+                placeholder="Enter ticket title"
+                required
+            >
 
         </div>
 
 
-        <form method="post" action="/tickets/create">
+        <div class="form-group">
 
-            <div>
+            <label for="description">
+                Description
+            </label>
 
-                <label for="title">
-                    Title
-                </label>
+            <textarea
+                id="description"
+                name="description"
+                rows="6"
+                placeholder="Describe your issue..."
+                required
+            ></textarea>
 
-                <input type="text" id="title" name="title" required>
-
-            </div>
-
-
-            <div>
-
-                <label for="description">
-                    Description
-                </label>
-
-                <textarea id="description" name="description" rows="6" required></textarea>
-
-            </div>
+        </div>
 
 
-            <div>
+        <div class="form-group">
 
-                <label for="priority">
-                    Priority
-                </label>
+            <label for="priority_id">
+                Priority
+            </label>
 
-                <select id="priority" name="priority_id" required>
+            <select
+                id="priority_id"
+                name="priority_id"
+                required
+            >
 
-                    <option value="" disabled selected>
-                        Select Priority
-                    </option>
+                <option value="">
+                    Select priority
+                </option>
 
-                    {% for priority in priorities %}
+                {% for priority in priorities %}
 
-                    <option value="{{ priority.id }}">
-                        {{ priority.value }}
-                    </option>
+                <option value="{{ priority.id }}">
+                    {{ priority.value }}
+                </option>
 
-                    {% endfor %}
+                {% endfor %}
 
-                </select>
+            </select>
 
-            </div>
+        </div>
 
 
-            <button type="submit">
-                Create Ticket
-            </button>
+        <button
+            type="submit"
+            class="submit-ticket-btn"
+        >
+            Submit Ticket
+        </button>
 
-        </form>
+    </form>
 
-    </aside>
+</aside>
 
-</div>
 
 <script>
 
-    function openTicketPanel() {
-        document.getElementById("ticket-panel").classList.add("open");
-        document.getElementById("ticket-overlay").classList.add("open");
+function openTicketPanel() {
+
+    document
+        .getElementById("ticket-panel")
+        .classList.add("open");
+
+    document
+        .getElementById("ticket-overlay")
+        .classList.add("open");
+}
+
+
+function closeTicketPanel() {
+
+    document
+        .getElementById("ticket-panel")
+        .classList.remove("open");
+
+    document
+        .getElementById("ticket-overlay")
+        .classList.remove("open");
+}
+
+
+document.addEventListener("keydown", function(event) {
+
+    if (event.key === "Escape") {
+        closeTicketPanel();
     }
 
-    function closeTicketPanel() {
-        document.getElementById("ticket-panel").classList.remove("open");
-        document.getElementById("ticket-overlay").classList.remove("open");
-    }
-    document.addEventListener("keydown", function (event) {
-        if (event.key === "Escape") {
-            closeTicketPanel();
-        }
-    });
+});
 
 </script>
 

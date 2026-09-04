@@ -2,193 +2,120 @@
 
 {% block title %}Ticket Details{% endblock %}
 
+{% block css %}
+<link rel="stylesheet" href="{{ url_for('static', path='ticket_detail.css') }}">
+{% endblock %}
+
 {% block content %}
 
-<div>
+<div class="ticket-page">
 
     <!-- Header -->
-    <header>
-
-        <div>
-            <h1>Ticket Details</h1>
-        </div>
-
-        <a href="/logout">
-            Logout
-        </a>
-
+    <header class="ticket-page-header">
+        <h1>Ticket Details</h1>
+        <a href="/logout" class="btn-logout">Logout</a>
     </header>
 
-
     <!-- Page Navigation -->
-    <div>
-
-        <a href="/dashboard">
-            Dashboard
-        </a>
-
+    <div class="ticket-nav">
+        <a href="/dashboard" class="back-link">&larr; Back to Dashboard</a>
+        {% if role == "Support Staff" %}
+<a href="/my-assigned-tickets" class="back-link">
+    &larr; Back to My Assigned Tickets
+</a>
+{% endif %}
     </div>
 
-
     <!-- Main Ticket Details -->
-    <main>
+    <main class="ticket-layout">
+
+        <!-- RIGHT: Ticket Details (moved first in markup for header context, styled right via grid) -->
+        <aside class="ticket-summary">
+
+            <div class="ticket-title-row">
+                <h2 class="ticket-title"><span class="ticket-id">#{{ ticket.id }}</span> {{ ticket.title }}</h2>
+                <span class="badge badge-status status-{{ ticket.status.value | lower | replace(' ', '-') }}">
+                    {{ ticket.status.value }}
+                </span>
+            </div>
+
+            <span class="badge badge-priority priority-{{ ticket.priority.value | lower }}">
+                {{ ticket.priority.value }} priority
+            </span>
+
+            <p class="ticket-description">{{ ticket.description }}</p>
+
+            <div class="ticket-meta">
+                <div class="meta-line">
+                    <span>Created by <strong>{{ ticket.creator.name }}</strong></span>
+                    <span class="meta-dot">&middot;</span>
+                    <span>{{ time_ago(ticket.created_at) }}</span>
+                </div>
+                <div class="meta-line">
+                    <span>Assigned to
+                        {% if ticket.assignee %}
+                        <span class="assignee">
+                            <span class="avatar avatar-sm">{{ ticket.assignee.name[0] }}</span>
+                            {{ ticket.assignee.name }}
+                        </span>
+                        {% else %}
+                        <em>Unassigned</em>
+                        {% endif %}
+                    </span>
+                    <span class="meta-dot">&middot;</span>
+                    <span>Updated {{ time_ago(ticket.updated_at) }}</span>
+                </div>
+            </div>
+
+        </aside>
 
         <!-- LEFT: Comments -->
-        <section>
+        <section class="comments-section">
 
             <h2>Comments</h2>
 
-            <div>
+            <div class="comment-list">
 
                 {% if comments %}
 
                 {% for comment in comments %}
 
-                <div>
-
-                    <div>
-
-                        <span>
-                            {{ comment.user.name }} :
-                        </span>
-
-                        <span>
-                            {{ time_ago(comment.created_at) }}
-                        </span>
-
+                <div class="comment">
+                    <span class="avatar">{{ comment.user.name[0] }}</span>
+                    <div class="comment-body">
+                        <div class="comment-header">
+                            <span class="comment-author">{{ comment.user.name }}</span>
+                            <span class="comment-time">{{ time_ago(comment.created_at) }}</span>
+                        </div>
+                        <p class="comment-text">{{ comment.comment }}</p>
                     </div>
-
-                    <p>
-                        {{ comment.comment }}
-                    </p>
-
                 </div>
 
                 {% endfor %}
 
                 {% else %}
 
-                <p>
-                    No comments yet.
-                </p>
+                <p class="no-comments">No comments yet.</p>
 
                 {% endif %}
 
             </div>
 
-
             <!-- Add Comment -->
             {% if can_comment %}
 
-            <form method="post" action="/tickets/{{ ticket.id }}/comments">
-
-                <textarea name="comment" placeholder="Write your comment..." rows="5" required></textarea>
-
-                <button type="submit">
-                    Add comment
-                </button>
-
+            <form method="post" action="/tickets/{{ ticket.id }}/comments" class="comment-form">
+                <textarea name="comment" placeholder="Write a comment..." rows="3" required></textarea>
+                <button type="submit" class="btn-primary">Add comment</button>
             </form>
 
             {% elif comment_message %}
 
-            <p>
-                {{ comment_message }}
-            </p>
+            <p class="comment-message">{{ comment_message }}</p>
 
             {% endif %}
 
         </section>
-
-
-        <!-- RIGHT: Ticket Details -->
-        <aside>
-
-            <h2>Details</h2>
-
-
-            <div>
-
-                <div>
-                    <strong>Ticket ID:</strong>
-                    <span>{{ ticket.id }}</span>
-                </div>
-
-                <div>
-                    <strong>Title:</strong>
-                    <span>{{ ticket.title }}</span>
-                </div>
-
-                <div>
-                    <strong>Description:</strong>
-                    <span>{{ ticket.description }}</span>
-                </div>
-
-                <div>
-                    <strong>Created At:</strong>
-                    <span>
-                        {{ time_ago(ticket.created_at) }}
-                    </span>
-                </div>
-
-                <div>
-                    <strong>Updated At:</strong>
-                    <span>
-                        {{ time_ago(ticket.updated_at) }}
-                    </span>
-                </div>
-
-                <div>
-                    <strong>Created By:</strong>
-                    <span>{{ ticket.creator.name }}</span>
-                </div>
-
-                <div>
-                    <strong>Assigned To:</strong>
-
-                    <span>
-                        {% if ticket.assignee %}
-                        {{ ticket.assignee.name }}
-                        {% else %}
-                        Unassigned
-                        {% endif %}
-                    </span>
-
-                </div>
-
-            </div>
-
-
-            <!-- Properties -->
-            <div>
-
-                <h3>Properties</h3>
-
-
-                <div>
-
-                    <strong>Priority</strong>
-
-                    <div>
-                        {{ ticket.priority.value }}
-                    </div>
-
-                </div>
-
-
-                <div>
-
-                    <strong>Status</strong>
-
-                    <div>
-                        {{ ticket.status.value }}
-                    </div>
-
-                </div>
-
-            </div>
-
-        </aside>
 
     </main>
 
