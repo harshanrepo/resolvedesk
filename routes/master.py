@@ -77,7 +77,7 @@ def generate_tag_code(db):
     numbers=[]
     for master in masters:
         number = int(master.tag_code[1:])
-        numbers.routerend(number)
+        numbers.append(number)
 
     next_number = max(numbers) + 1
 
