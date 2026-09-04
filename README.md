@@ -1,110 +1,218 @@
-# ResolveDesk 🎫
+# resolveDesk
 
-A support ticket management system built with **FastAPI**.
+A beginner-friendly Help Desk / Ticket Management web application built with FastAPI, SQLite, SQLAlchemy, Jinja2, HTML, and CSS.
 
-> 🚧 **Status: Currently Under Construction**
->
-> ResolveDesk is an ongoing project. Features are being developed and improved step by step.
+## Features
 
-## 📌 About
+- User registration and login
+- Session-based authentication
+- Role-based access control
+- Create and manage support tickets
+- Ticket priority and status management
+- Ticket comments
+- Support Staff assigned-ticket management
+- Admin ticket assignment and reassignment
+- Master Data management
+- Responsive dashboard UI
+- Password hashing using bcrypt
 
-ResolveDesk is a Help Desk web application where users can create and track support tickets, while support staff and administrators can manage tickets, update statuses, assign tickets, and respond to users.
-
-The project is being built from scratch to understand how a complete web application works with **FastAPI, databases, authentication, CRUD operations, and server-side templates**.
-
-## 🛠️ Tech Stack
-
-* **Backend:** FastAPI
-* **Database:** SQLite
-* **ORM:** SQLAlchemy
-* **Frontend:** HTML, CSS
-* **Templates:** Jinja2
-* **Authentication:** Sessions / Cookies
-* **Password Security:** Password Hashing
-
-## 🚀 Planned Features
+## User Roles
 
 ### User
 
-* User registration and login
-* Create support tickets
-* View personal tickets
-* View ticket details
-* Add comments
-* Track ticket status
+- Register and login
+- View personal dashboard
+- Create tickets
+- View own tickets
+- View ticket details
+- Comment on own tickets
 
-### Admin / Support Staff
+### Support Staff
 
-* View all tickets
-* Update ticket status
-* Change ticket priority
-* Assign tickets to support staff
-* Add comments
-* Close tickets
+- View assigned tickets
+- Update ticket status
+- Close assigned tickets
+- Comment on assigned tickets
 
-### Ticket Management
+### Admin
 
-Each ticket will contain:
+- View all tickets
+- Assign and reassign tickets
+- Manage Master Data
 
-* Title
-* Description
-* Priority
-* Status
-* Created by
-* Assigned staff
-* Created date
-* Updated date
-
-## 🗄️ Database Structure
-
-The application will use three main tables:
+## Ticket Workflow
 
 ```text
-Users
-  │
-  └── creates ──> Tickets
-                    │
-                    └── has ──> Comments
+User creates ticket
+        ↓
+      Open
+        ↓
+Admin assigns ticket
+        ↓
+Support Staff works on ticket
+        ↓
+   In Progress
+        ↓
+     Resolved
+        ↓
+      Closed
 ```
 
-## 📚 Learning Goals
+## Tech Stack
 
-This project is being developed to practice:
+- Backend: FastAPI
+- Database: SQLite
+- ORM: SQLAlchemy
+- Templates: Jinja2
+- Frontend: HTML, CSS
+- Authentication: Session / Cookie
+- Password Hashing: bcrypt
+- Environment Variables: python-dotenv
 
-* FastAPI routing
-* RESTful operations
-* Pydantic schemas
-* SQLAlchemy
-* SQLite
-* Database relationships
-* CRUD operations
-* Jinja2 templates
-* HTML forms
-* Sessions and cookies
-* Authentication & authorization
-* Password hashing
-* Form validation
-* Filtering and searching
-* Clean project structure
+## Project Structure
 
-## 📂 Project Status
+```text
+resolveDesk/
+│
+├── main.py
+├── models.py
+├── database.py
+├── dependencies.py
+├── utils.py
+│
+├── routes/
+│   ├── auth.py
+│   ├── dashboard.py
+│   ├── ticket.py
+│   └── master.py
+│
+├── templates/
+│   ├── base.html
+│   ├── login.html
+│   ├── register.html
+│   ├── user_dashboard.html
+│   ├── staff_dashboard.html
+│   ├── my_assigned_tickets.html
+│   ├── ticket_detail.html
+│   └── master.html
+│
+├── static/
+│   ├── base.css
+│   ├── auth.css
+│   ├── dashboard.css
+│   ├── master.css
+│   ├── ticket_detail.css
+│   └── favicon.ico
+│
+├── .env
+├── .gitignore
+├── requirements.txt
+└── README.md
+```
 
-The project is currently under active development.
+## Database
 
-Development will be completed step by step, starting from the database and authentication system and progressing toward ticket management, admin functionality, frontend templates, styling, and testing.
+The application uses SQLite with SQLAlchemy.
 
-## 🔮 Future Improvements
+Main tables:
 
-Possible future additions include:
+- users
+- tickets
+- comments
+- master_table
+- master_list_table
 
-* Email notifications
-* Ticket search and advanced filtering
-* Pagination
-* File attachments
-* Dashboard statistics
-* REST API documentation
-* Improved role and permission management
+Master Data is used for values such as:
 
----
+### Priority
 
-**Built with FastAPI • SQLAlchemy • SQLite • Jinja2**
+- Low
+- Medium
+- High
+
+### Status
+
+- Open
+- In Progress
+- Resolved
+- Closed
+
+### Role
+
+- User
+- Support Staff
+- Admin
+
+## Installation
+
+Clone the repository:
+
+```bash
+git clone <your-github-repository-url>
+cd resolveDesk
+```
+
+Create a virtual environment:
+
+```bash
+python -m venv venv
+```
+
+Activate it on Windows:
+
+```bash
+venv\Scripts\activate
+```
+
+Install dependencies:
+
+```bash
+pip install -r requirements.txt
+```
+
+Create a `.env` file:
+
+```env
+SECRET_KEY=your-secret-key
+```
+
+Run the application:
+
+```bash
+uvicorn main:app --reload
+```
+
+Open the application:
+
+```text
+http://127.0.0.1:8000
+```
+
+## Authentication
+
+resolveDesk uses session-based authentication.
+
+After login, the user's ID is stored in the session. The application uses that ID to identify the logged-in user and control access to tickets and dashboard features.
+
+Passwords are never stored as plain text. They are hashed using bcrypt.
+
+## Purpose
+
+This project was built to understand how a real-world FastAPI web application works, including:
+
+- Authentication
+- Authorization
+- CRUD operations
+- Database relationships
+- Form handling
+- Sessions
+- Role-based access
+- Jinja2 templates
+- Responsive frontend design
+- Admin and staff workflows
+
+## Status
+
+Completed
+
+Built as a learning and portfolio project.
