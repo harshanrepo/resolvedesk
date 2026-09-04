@@ -3,7 +3,7 @@ from fastapi.templating import Jinja2Templates
 from database import SessionLocal
 import models
 from fastapi.responses import RedirectResponse
-from fastapi import HTTPException,Request,Form
+from fastapi import HTTPException
 from dependencies import get_current_user,get_user_role
 
 
@@ -59,11 +59,13 @@ def master_page(
         name="master.html",
         request=request,
         context={
-            "masters": masters,
-            "selected_master": selected_master,
-            "values": values,
-            "error": error
-        }
+    "user": user,
+    "role": role,
+    "masters": masters,
+    "selected_master": selected_master,
+    "values": values,
+    "error": error
+}
     )
 
 

@@ -1,0 +1,189 @@
+/* ===== Master Data Layout ===== */
+.master-layout {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+    flex: 1;
+    min-height: 0;
+}
+
+.master-panel {
+    background-color: #ffffff;
+    border-radius: 10px;
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    min-height: 0;
+    overflow-y: auto;
+}
+
+.master-panel-header {
+    margin-bottom: 16px;
+}
+
+.master-panel-header h3 {
+    font-size: 18px;
+    font-weight: 700;
+}
+
+/* ===== Add forms (master name / value) ===== */
+.master-add-form {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 20px;
+}
+
+.master-add-form input {
+    flex: 1;
+    padding: 10px 12px;
+    border: 1px solid #d9dce3;
+    border-radius: 8px;
+    font-size: 14px;
+}
+
+.master-error {
+    background-color: #fdeded;
+    color: #e64545;
+    padding: 10px 14px;
+    border-radius: 8px;
+    font-size: 13px;
+    margin-bottom: 16px;
+}
+
+/* ===== Master Categories Table ===== */
+.master-table-container {
+    flex: 1;
+    min-height: 0;
+    overflow-y: auto;
+}
+
+.master-table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.master-table thead {
+    background-color: #f7f8fa;
+    position: sticky;
+    top: 0;
+}
+
+.master-table th {
+    text-align: left;
+    padding: 12px 16px;
+    font-size: 13px;
+    font-weight: 600;
+    color: #444;
+    border-bottom: 1px solid #eceef2;
+}
+
+.master-table td {
+    padding: 14px 16px;
+    font-size: 14px;
+    border-bottom: 1px solid #eceef2;
+    vertical-align: middle;
+}
+
+.master-table tbody tr:hover {
+    background-color: #fafbfc;
+}
+
+.master-table tbody tr.selected-row {
+    background-color: #eef0f6;
+}
+
+.tag-code-cell {
+    color: #8a8fa3;
+    font-size: 13px;
+    font-family: monospace;
+}
+
+.master-actions {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+}
+
+.inline-form {
+    display: inline;
+}
+
+.manage-link {
+    color: #1e2749;
+    font-weight: 600;
+    font-size: 13px;
+    text-decoration: none;
+}
+
+.manage-link:hover {
+    text-decoration: underline;
+}
+
+.delete-link {
+    background: none;
+    border: none;
+    color: #e64545;
+    font-weight: 600;
+    font-size: 13px;
+    cursor: pointer;
+    padding: 0;
+}
+
+.delete-link:hover {
+    text-decoration: underline;
+}
+
+/* ===== Values List ===== */
+.master-values-list {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    flex: 1;
+    min-height: 0;
+    overflow-y: auto;
+}
+
+.master-value-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 12px 14px;
+    background-color: #f7f8fa;
+    border-radius: 8px;
+    font-size: 14px;
+}
+
+.no-values {
+    color: #8a8fa3;
+    font-size: 14px;
+    padding: 20px 0;
+    text-align: center;
+}
+
+/* ===== Empty State (no master selected) ===== */
+.master-empty-state {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    padding: 40px 20px;
+}
+
+.master-empty-state h3 {
+    font-size: 18px;
+    margin-bottom: 8px;
+}
+
+.master-empty-state p {
+    color: #8a8fa3;
+    font-size: 14px;
+}
+
+/* ===== Responsive ===== */
+@media (max-width: 900px) {
+    .master-layout {
+        grid-template-columns: 1fr;
+    }
+}

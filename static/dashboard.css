@@ -497,6 +497,7 @@ body {
     font-size: 13px;
 }
 
+
 /* ===== View Ticket Icon Button ===== */
 .view-ticket-btn {
     display: inline-flex;
@@ -676,4 +677,111 @@ body {
         align-items: flex-start;
         gap: 12px;
     }
+}
+
+/* ===== Admin Assignment Controls ===== */
+
+.assignment-form {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.assignment-select {
+    width: 140px;
+    height: 36px;
+    padding: 0 10px;
+    border: 1px solid #d9dce3;
+    border-radius: 8px;
+    background: #ffffff;
+    color: #1a1a2e;
+    font-size: 13px;
+    font-family: inherit;
+    cursor: pointer;
+}
+
+.assignment-select:focus {
+    outline: none;
+    border-color: #1e2749;
+}
+
+.assignment-save-btn {
+    height: 36px;
+    padding: 0 13px;
+    border: none;
+    border-radius: 8px;
+    background: #1e2749;
+    color: #ffffff;
+    font-size: 13px;
+    font-weight: 500;
+    font-family: inherit;
+    cursor: pointer;
+}
+
+.assignment-save-btn:hover {
+    background: #2a3560;
+}
+/* =========================
+   Staff Status Update
+   ========================= */
+
+.status-update-form {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.status-select {
+    min-width: 125px;
+    padding: 8px 30px 8px 10px;
+
+    background-color: #ffffff;
+    color: #1f2937;
+
+    border: 1px solid #dfe2e8;
+    border-radius: 7px;
+
+    font-size: 13px;
+    font-weight: 500;
+
+    cursor: pointer;
+    outline: none;
+
+    transition: border-color 0.2s ease,
+                box-shadow 0.2s ease;
+}
+
+.status-select:hover {
+    border-color: #b8bdc9;
+}
+
+.status-select:focus {
+    border-color: #1e2749;
+    box-shadow: 0 0 0 3px rgba(30, 39, 73, 0.08);
+}
+
+.status-save-btn {
+    padding: 8px 12px;
+
+    background-color: #1e2749;
+    color: #ffffff;
+
+    border: none;
+    border-radius: 7px;
+
+    font-size: 13px;
+    font-weight: 600;
+
+    cursor: pointer;
+
+    transition: background-color 0.2s ease,
+                transform 0.1s ease;
+}
+
+.status-save-btn:hover {
+    background-color: #151c38;
+}
+
+.status-save-btn:active {
+    transform: translateY(1px);
 }

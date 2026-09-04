@@ -1,246 +1,224 @@
 {% extends "base.html" %}
 
 {% block title %}
-    resolveDesk - Master Data
+resolveDesk - Master Data
+{% endblock %}
+
+{% block css %}
+<link rel="stylesheet" href="{{ url_for('static', path='dashboard.css') }}">
+<link rel="stylesheet" href="{{ url_for('static', path='master.css') }}">
 {% endblock %}
 
 {% block content %}
 
-<div>
+<div class="dashboard-page">
 
     <!-- Header -->
-    <header>
+    <header class="dashboard-header">
 
-        <div>
-            <h1>Master Data</h1>
+        <div class="brand">
+            <div class="logo">
+                <img src="{{ url_for('static', path='icons/favicon.svg') }}" alt="resolveDesk">
+            </div>
+            <div>
+                <h1>resolveDesk</h1>
+                <span>Admin Portal</span>
+            </div>
         </div>
 
-        <form method="post" action="/logout">
-            <button type="submit">
-                Logout
-            </button>
-        </form>
+        <div class="header-right">
+            <div class="user-info">
+                <span class="user-name">{{ user.name }}</span>
+                <span class="user-role">{{ role }}</span>
+            </div>
+        </div>
 
     </header>
 
 
-    <!-- Main Layout -->
-    <main>
+    <!-- Dashboard Layout -->
+    <div class="dashboard-layout">
 
-        <!-- LEFT SIDE -->
-        <section>
+        <!-- Sidebar -->
+        <aside class="dashboard-sidebar">
 
-            <h2>Master Categories</h2>
+            <nav class="sidebar-nav">
 
+                <a href="/dashboard" class="sidebar-nav-item {% if active_page == 'dashboard' %}active{% endif %}">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none"
+                        stroke="currentColor" stroke-width="2">
+                        <rect x="3" y="3" width="7" height="7" rx="1"></rect>
+                        <rect x="14" y="3" width="7" height="7" rx="1"></rect>
+                        <rect x="14" y="14" width="7" height="7" rx="1"></rect>
+                        <rect x="3" y="14" width="7" height="7" rx="1"></rect>
+                    </svg>
+                    Dashboard
+                </a>
 
-            <!-- Add Master -->
-            <form method="post" action="/master">
+                {% if role == "Admin" %}
+                <a href="/master" class="sidebar-nav-item {% if active_page == 'master' %}active{% endif %}">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none"
+                        stroke="currentColor" stroke-width="2">
+                        <circle cx="12" cy="12" r="3"></circle>
+                        <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"></path>
+                    </svg>
+                    Manage Master Data
+                </a>
+                {% endif %}
 
-                <input
-                    type="text"
-                    name="name"
-                    placeholder="Master name"
-                    required
-                >
+            </nav>
 
-                <button type="submit">
-                    Add Master
+            <form method="post" action="/logout" class="sidebar-logout-form">
+                <button type="submit" class="logout-btn">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none"
+                        stroke="currentColor" stroke-width="2">
+                        <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path>
+                        <polyline points="16 17 21 12 16 7"></polyline>
+                        <line x1="21" y1="12" x2="9" y2="12"></line>
+                    </svg>
+                    Logout
                 </button>
-
             </form>
 
-
-            <!-- Master List -->
-            <div>
-
-                <table>
-
-                    <thead>
-                        <tr>
-                            <th>Name</th>
-                            <th>Tag Code</th>
-                            <th>Action</th>
-                        </tr>
-                    </thead>
+        </aside>
 
 
-                    <tbody>
+        <!-- Main Content -->
+        <main class="dashboard-main">
 
-                        {% for master in masters %}
-
-                        <tr>
-
-                            <td>
-                                {{ master.name }}
-                            </td>
-
-                            <td>
-                                {{ master.tag_code }}
-                            </td>
-
-                            <td>
-
-                                <a
-                                    href="/master?tag_code={{ master.tag_code }}"
-                                >
-                                    Manage
-                                </a>
-
-
-                                <form
-                                    method="post"
-                                    action="/master/{{ master.id }}/delete"
-                                >
-
-                                    <button
-                                        type="submit"
-                                    >
-                                        Delete
-                                    </button>
-
-                                </form>
-
-                            </td>
-
-                        </tr>
-
-                        {% endfor %}
-
-                    </tbody>
-
-                </table>
-
+            <div class="welcome-section">
+                <div>
+                    <h2>Master Data</h2>
+                    <p class="welcome-subtext">Manage master categories and their values.</p>
+                </div>
             </div>
 
-        </section>
+            <div class="master-layout">
 
+                <!-- LEFT: Master Categories -->
+                <section class="master-panel">
 
-        <!-- RIGHT SIDE -->
-        <section>
+                    <div class="master-panel-header">
+                        <h3>Master Categories</h3>
+                    </div>
 
-            {% if selected_master %}
+                    <form method="post" action="/master" class="master-add-form">
+                        <input type="text" name="name" placeholder="Master name" required>
+                        <button type="submit" class="filter-btn">Add Master</button>
+                    </form>
 
-                <!-- Selected Master -->
-                <div>
+                    <div class="master-table-container">
 
-                    <div>
+                        <table class="master-table">
 
-                        <h2>
-                            {{ selected_master.name }}
-                        </h2>
+                            <thead>
+                                <tr>
+                                    <th>Name</th>
+                                    <th>Tag Code</th>
+                                    <th></th>
+                                </tr>
+                            </thead>
 
-                        <p>
-                            Tag Code:
-                            <strong>{{ selected_master.tag_code }}</strong>
-                        </p>
+                            <tbody>
+
+                                {% for master in masters %}
+
+                                <tr class="{% if selected_master and selected_master.tag_code == master.tag_code %}selected-row{% endif %}">
+
+                                    <td>{{ master.name }}</td>
+
+                                    <td class="tag-code-cell">{{ master.tag_code }}</td>
+
+                                    <td class="master-actions">
+
+                                        <a href="/master?tag_code={{ master.tag_code }}" class="manage-link">
+                                            Manage
+                                        </a>
+
+                                        <form method="post" action="/master/{{ master.id }}/delete" class="inline-form">
+                                            <button type="submit" class="delete-link">
+                                                Delete
+                                            </button>
+                                        </form>
+
+                                    </td>
+
+                                </tr>
+
+                                {% endfor %}
+
+                            </tbody>
+
+                        </table>
 
                     </div>
 
-                </div>
+                </section>
 
 
-                {% if error == "duplicate" %}
+                <!-- RIGHT: Values -->
+                <section class="master-panel">
 
-                <p>
-                    This value already exists.
-                </p>
+                    {% if selected_master %}
 
-                {% endif %}
+                    <div class="master-panel-header">
+                        <div>
+                            <h3>{{ selected_master.name }}</h3>
+                            <p class="welcome-subtext">Tag Code: <strong>{{ selected_master.tag_code }}</strong></p>
+                        </div>
+                    </div>
 
+                    {% if error == "duplicate" %}
+                    <p class="master-error">This value already exists.</p>
+                    {% endif %}
 
-                <!-- Add Value -->
-                <div>
-
-                    <h3>Add Value</h3>
-
-                    <form
-                        method="post"
-                        action="/master/{{ selected_master.tag_code }}/value"
-                    >
-
-                        <input
-                            type="text"
-                            name="value"
-                            placeholder="Enter value"
-                            required
-                        >
-
-                        <button type="submit">
-                            Add
-                        </button>
-
+                    <form method="post" action="/master/{{ selected_master.tag_code }}/value" class="master-add-form">
+                        <input type="text" name="value" placeholder="Enter value" required>
+                        <button type="submit" class="filter-btn">Add</button>
                     </form>
 
-                </div>
+                    <div class="master-values-list">
 
-
-                <!-- Values -->
-                <div>
-
-                    <h3>Values</h3>
-
-                    {% if values %}
-
-                    <div>
+                        {% if values %}
 
                         {% for item in values %}
 
-                        <div>
+                        <div class="master-value-row">
+                            <span>{{ item.value }}</span>
 
-                            <span>
-                                {{ item.value }}
-                            </span>
-
-
-                            <form
-                                method="post"
-                                action="/master/value/{{ item.id }}"
-                            >
-
-                                <button
-                                    type="submit"
-                                >
+                            <form method="post" action="/master/value/{{ item.id }}" class="inline-form">
+                                <button type="submit" class="delete-link">
                                     Delete
                                 </button>
-
                             </form>
-
                         </div>
 
                         {% endfor %}
+
+                        {% else %}
+
+                        <p class="no-values">No values added yet.</p>
+
+                        {% endif %}
 
                     </div>
 
                     {% else %}
 
-                    <p>
-                        No values added yet.
-                    </p>
+                    <div class="master-empty-state">
+                        <h3>Select a Master</h3>
+                        <p>Click Manage on a master category to view its values.</p>
+                    </div>
 
                     {% endif %}
 
-                </div>
+                </section>
 
+            </div>
 
-            {% else %}
+        </main>
 
-                <!-- Nothing Selected -->
-                <div>
-
-                    <h2>Select a Master</h2>
-
-                    <p>
-                        Click Manage on a master category
-                        to view its values.
-                    </p>
-
-                </div>
-
-            {% endif %}
-
-        </section>
-
-    </main>
+    </div>
 
 </div>
 

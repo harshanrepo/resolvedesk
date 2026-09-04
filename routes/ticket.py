@@ -6,7 +6,7 @@ from sqlalchemy.orm import joinedload
 from database import SessionLocal
 from fastapi.templating import Jinja2Templates
 templates=Jinja2Templates(directory="templates")
-from fastapi import HTTPException,Request,Form
+from fastapi import HTTPException
 from utils import time_ago
 
 
@@ -404,7 +404,7 @@ def update_ticket_status(
 
     current_status = db.query(models.MasterListTable).filter(models.MasterListTable.id == ticket.status_id).first()
     
-    if status.value == "Close":
+    if status.value == "Closed":
         if current_status.value != "Resolved":
             db.close()
             raise HTTPException(

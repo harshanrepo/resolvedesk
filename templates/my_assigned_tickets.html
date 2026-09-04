@@ -43,29 +43,32 @@ resolveDesk - My Assigned Tickets
 
             <nav class="sidebar-nav">
 
-    <a href="/dashboard" class="sidebar-nav-item">
-        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-            <rect x="3" y="3" width="7" height="7" rx="1"></rect>
-            <rect x="14" y="3" width="7" height="7" rx="1"></rect>
-            <rect x="14" y="14" width="7" height="7" rx="1"></rect>
-            <rect x="3" y="14" width="7" height="7" rx="1"></rect>
-        </svg>
-        Dashboard
-    </a>
+                <a href="/dashboard" class="sidebar-nav-item">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none"
+                        stroke="currentColor" stroke-width="2">
+                        <rect x="3" y="3" width="7" height="7" rx="1"></rect>
+                        <rect x="14" y="3" width="7" height="7" rx="1"></rect>
+                        <rect x="14" y="14" width="7" height="7" rx="1"></rect>
+                        <rect x="3" y="14" width="7" height="7" rx="1"></rect>
+                    </svg>
+                    Dashboard
+                </a>
 
-    <a href="/my-assigned-tickets" class="sidebar-nav-item active">
-        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-            <path d="M9 11l3 3L22 4"></path>
-            <path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"></path>
-        </svg>
-        My Assigned Tickets
-    </a>
+                <a href="/my-assigned-tickets" class="sidebar-nav-item active">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none"
+                        stroke="currentColor" stroke-width="2">
+                        <path d="M9 11l3 3L22 4"></path>
+                        <path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"></path>
+                    </svg>
+                    My Assigned Tickets
+                </a>
 
-</nav>
+            </nav>
 
             <form method="post" action="/logout" class="sidebar-logout-form">
                 <button type="submit" class="logout-btn">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none"
+                        stroke="currentColor" stroke-width="2">
                         <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path>
                         <polyline points="16 17 21 12 16 7"></polyline>
                         <line x1="21" y1="12" x2="9" y2="12"></line>
@@ -86,6 +89,7 @@ resolveDesk - My Assigned Tickets
                     <p class="welcome-subtext">Tickets currently assigned to you.</p>
                 </div>
             </div>
+
 
             <div class="summary-cards">
 
@@ -116,28 +120,35 @@ resolveDesk - My Assigned Tickets
 
             </div>
 
+
             <div class="section-header">
                 <h3>My Assigned Tickets</h3>
             </div>
+
 
             <form method="get" action="/my-assigned-tickets" class="filter-bar">
 
                 <div class="filter-group filter-search">
                     <label>Search</label>
+
                     <div class="search-input-wrap">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none"
+                            stroke="currentColor" stroke-width="2">
                             <circle cx="11" cy="11" r="8"></circle>
                             <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
                         </svg>
-                        <input type="text" name="search" placeholder="Search by ID or title"
-                            value="{{ search or '' }}">
+
+                        <input type="text" name="search" placeholder="Search by ID or title" value="{{ search or '' }}">
                     </div>
                 </div>
 
+
                 <div class="filter-group">
                     <label>Status</label>
+
                     <select name="status">
                         <option value="" disabled selected hidden>All Status</option>
+
                         {% for status in statuses %}
                         <option value="{{ status.value }}" {% if status_filter==status.value %}selected{% endif %}>
                             {{ status.value }}
@@ -146,10 +157,13 @@ resolveDesk - My Assigned Tickets
                     </select>
                 </div>
 
+
                 <div class="filter-group">
                     <label>Priority</label>
+
                     <select name="priority_id">
                         <option value="" disabled selected hidden>All Priority</option>
+
                         {% for priority in priorities %}
                         <option value="{{ priority.id }}" {% if priority_filter==priority.id %}selected{% endif %}>
                             {{ priority.value }}
@@ -158,8 +172,18 @@ resolveDesk - My Assigned Tickets
                     </select>
                 </div>
 
-                <button type="submit" class="filter-btn">Filter</button>
-                <a href="/my-assigned-tickets" class="clear-btn">Clear</a>
+
+                <button type="submit" class="filter-btn">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none"
+                        stroke="currentColor" stroke-width="2">
+                        <polygon points="22 3 2 3 10 12.46 10 19 14 21 14 12.46 22 3"></polygon>
+                    </svg>
+                    Filter
+                </button>
+
+                <a href="/my-assigned-tickets" class="clear-btn">
+                    Clear
+                </a>
 
             </form>
 
@@ -189,16 +213,28 @@ resolveDesk - My Assigned Tickets
 
                         <tr>
 
-                            <td>#{{ ticket.id }}</td>
+                            <td>
+                                #{{ ticket.id }}
+                            </td>
+
 
                             <td>
                                 <div class="ticket-title-cell">
-                                    <span class="ticket-title">{{ ticket.title }}</span>
-                                    <span class="ticket-desc">{{ ticket.description }}</span>
+                                    <span class="ticket-title">
+                                        {{ ticket.title }}
+                                    </span>
+
+                                    <span class="ticket-desc">
+                                        {{ ticket.description }}
+                                    </span>
                                 </div>
                             </td>
 
-                            <td>{{ ticket.creator.name }}</td>
+
+                            <td>
+                                {{ ticket.creator.name }}
+                            </td>
+
 
                             <td>
                                 <span class="priority-badge priority-{{ ticket.priority.value | lower }}">
@@ -206,30 +242,48 @@ resolveDesk - My Assigned Tickets
                                 </span>
                             </td>
 
+
+                            <!-- Staff Status -->
                             <td>
-                                <form method="post" action="/admin/tickets/{{ ticket.id }}/status">
+                                <form method="post" action="/admin/tickets/{{ ticket.id }}/status"
+                                    class="status-update-form">
 
-                                        <select name="status_id">
-                                            {% for status in statuses %}
-                                            <option value="{{ status.id }}" {% if ticket.status_id==status.id %}
-                                                selected {% endif %}>
-                                                {{ status.value }}
-                                            </option>
-                                            {% endfor %}
-                                        </select>
+                                    <select name="status_id" class="status-select">
 
-                                        <button type="submit">Save</button>
+                                        {% for status in statuses %}
 
-                                    </form>
+                                        <option value="{{ status.id }}" {% if ticket.status_id==status.id %}selected{%
+                                            endif %}>
+                                            {{ status.value }}
+                                        </option>
+
+                                        {% endfor %}
+
+                                    </select>
+
+                                    <button type="submit" class="status-save-btn">
+                                        Save
+                                    </button>
+
+                                </form>
                             </td>
 
-                            <td class="created-cell">{{ time_ago(ticket.created_at) }}</td>
+
+                            <td class="created-cell">
+                                {{ time_ago(ticket.created_at) }}
+                            </td>
+
 
                             <td>
                                 <a href="/tickets/{{ ticket.id }}" class="view-ticket-btn" title="View ticket">
-                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24"
+                                        fill="none" stroke="currentColor" stroke-width="2">
+
                                         <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path>
+
                                     </svg>
+
                                 </a>
                             </td>
 

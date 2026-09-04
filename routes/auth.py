@@ -57,11 +57,13 @@ def register_user(request: Request,
         models.User.email == email
     ).first()
 
+    roleMaster=get_master_by_name(db, "Role")
+
     if existing_user:
         roles = db.query(
                 models.MasterListTable
             ).filter(
-                models.MasterListTable.tag_code == "T0003"
+                models.MasterListTable.tag_code == roleMaster.tag_code
             ).all()
         
         db.close()

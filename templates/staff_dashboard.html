@@ -31,10 +31,10 @@ resolveDesk - Staff Dashboard
                 <span class="user-role">{{ role }}</span>
             </div>
             <form method="post" action="/logout" class="header-logout-form">
-    <button type="submit" class="header-logout-btn">
-        Logout
-    </button>
-</form>
+                <button type="submit" class="header-logout-btn">
+                    Logout
+                </button>
+            </form>
         </div>
 
     </header>
@@ -46,48 +46,56 @@ resolveDesk - Staff Dashboard
         <!-- Sidebar -->
         <aside class="dashboard-sidebar">
 
-    <nav class="sidebar-nav">
+            <nav class="sidebar-nav">
 
-        <a href="/dashboard" class="sidebar-nav-item active">
-            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                <rect x="3" y="3" width="7" height="7" rx="1"></rect>
-                <rect x="14" y="3" width="7" height="7" rx="1"></rect>
-                <rect x="14" y="14" width="7" height="7" rx="1"></rect>
-                <rect x="3" y="14" width="7" height="7" rx="1"></rect>
-            </svg>
-            Dashboard
-        </a>
+                <a href="/dashboard" class="sidebar-nav-item active">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none"
+                        stroke="currentColor" stroke-width="2">
+                        <rect x="3" y="3" width="7" height="7" rx="1"></rect>
+                        <rect x="14" y="3" width="7" height="7" rx="1"></rect>
+                        <rect x="14" y="14" width="7" height="7" rx="1"></rect>
+                        <rect x="3" y="14" width="7" height="7" rx="1"></rect>
+                    </svg>
+                    Dashboard
+                </a>
 
-        {% if role == "Support Staff" %}
-        <a href="/my-assigned-tickets" class="sidebar-nav-item ">
-            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                <path d="M9 11l3 3L22 4"></path>
-                <path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"></path>
-            </svg>
-            My Assigned Tickets
-        </a>
-        {% endif %}
+                {% if role == "Support Staff" %}
+                <a href="/my-assigned-tickets" class="sidebar-nav-item ">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none"
+                        stroke="currentColor" stroke-width="2">
+                        <path d="M9 11l3 3L22 4"></path>
+                        <path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"></path>
+                    </svg>
+                    My Assigned Tickets
+                </a>
+                {% endif %}
 
-        {% if role == "Admin" %}
-        <a href="/master" class="sidebar-nav-item">
-            Manage Master Data
-        </a>
-        {% endif %}
+                {% if role == "Admin" %}
+                <a href="/master" class="sidebar-nav-item">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none"
+                        stroke="currentColor" stroke-width="2">
+                        <circle cx="12" cy="12" r="3"></circle>
+                        <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"></path>
+                    </svg>
+                    Manage Master Data
+                </a>
+                {% endif %}
 
-    </nav>
+            </nav>
 
-    <form method="post" action="/logout" class="sidebar-logout-form">
-        <button type="submit" class="logout-btn">
-            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path>
-                <polyline points="16 17 21 12 16 7"></polyline>
-                <line x1="21" y1="12" x2="9" y2="12"></line>
-            </svg>
-            Logout
-        </button>
-    </form>
+            <form method="post" action="/logout" class="sidebar-logout-form">
+                <button type="submit" class="logout-btn">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none"
+                        stroke="currentColor" stroke-width="2">
+                        <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path>
+                        <polyline points="16 17 21 12 16 7"></polyline>
+                        <line x1="21" y1="12" x2="9" y2="12"></line>
+                    </svg>
+                    Logout
+                </button>
+            </form>
 
-</aside>
+        </aside>
 
 
         <!-- Main Content -->
@@ -100,12 +108,6 @@ resolveDesk - Staff Dashboard
                         <h2>Welcome, {{ user.name }}</h2>
                         <p class="welcome-subtext">Here's what's happening with your tickets today.</p>
                     </div>
-
-                    <!-- CSS has .raise-ticket-btn + #ticket-panel side panel styles,
-                         but no "raise ticket" route/form exists in this template yet.
-                         Add here if/when you build that feature:
-                    <button class="raise-ticket-btn" onclick="openTicketPanel()">Raise Ticket</button>
-                    -->
                 </div>
 
                 <div class="summary-cards">
@@ -146,10 +148,11 @@ resolveDesk - Staff Dashboard
                     <div class="filter-group filter-search">
                         <label>Search</label>
                         <div class="search-input-wrap">
-                            <!-- CSS positions an svg icon at left:12px inside .search-input-wrap.
-                                 Add a search icon svg here, e.g.:
-                            <svg width="16" height="16" ...>...</svg>
-                            -->
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24"
+                                fill="none" stroke="currentColor" stroke-width="2">
+                                <circle cx="11" cy="11" r="8"></circle>
+                                <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+                            </svg>
                             <input type="text" name="search" placeholder="Search by ID, title or creator"
                                 value="{{ search or '' }}">
                         </div>
@@ -193,7 +196,10 @@ resolveDesk - Staff Dashboard
                     </div>
                     {% endif %}
 
-                    <button type="submit" class="filter-btn">Filter</button>
+                    <button type="submit" class="filter-btn"><svg xmlns="http://www.w3.org/2000/svg" width="15"
+                            height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <polygon points="22 3 2 3 10 12.46 10 19 14 21 14 12.46 22 3"></polygon>
+                        </svg>Filter</button>
                     <a href="/dashboard" class="clear-btn">Clear</a>
 
                 </form>
@@ -256,11 +262,6 @@ resolveDesk - Staff Dashboard
                                         {{ ticket.status.value }}
                                     </span>
 
-                                    <!-- Note: CSS has a read-only .status-badge style
-                                         (status-open / status-in-progress / status-resolved / status-closed)
-                                         but this cell is a live dropdown for editing, so the badge
-                                         classes aren't applied here — that's expected. -->
-
                                 </td>
 
 
@@ -269,19 +270,23 @@ resolveDesk - Staff Dashboard
 
                                     {% if role == "Admin" %}
 
-                                    <form method="post" action="/admin/tickets/{{ ticket.id }}/assign">
+                                    <form method="post" action="/admin/tickets/{{ ticket.id }}/assign"
+                                        class="assignment-form">
 
-                                        <select name="assigned_to">
+                                        <select name="assigned_to" class="assignment-select">
                                             <option value="">Not Assigned</option>
+
                                             {% for staff in available_staff_by_ticket[ticket.id] %}
-                                            <option value="{{ staff.id }}" {% if ticket.assigned_to==staff.id %}
-                                                selected {% endif %}>
+                                            <option value="{{ staff.id }}" {% if ticket.assigned_to==staff.id
+                                                %}selected{% endif %}>
                                                 {{ staff.name }}
                                             </option>
                                             {% endfor %}
                                         </select>
 
-                                        <button type="submit">Save</button>
+                                        <button type="submit" class="assignment-save-btn">
+                                            Save
+                                        </button>
 
                                     </form>
 
