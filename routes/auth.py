@@ -13,42 +13,50 @@ templates=Jinja2Templates(directory="templates")
 @router.get("/register")
 def register_page(request: Request, error: str | None = None):
 
-    db = SessionLocal()
-    roleMaster=get_master_by_name(db, "Role")
+    user_id = request.session.get("user_id")
 
-    if not roleMaster:
-        db.close()
-        raise HTTPException(
-            status_code=500,
-            detail="Role master data not found"
-        )
+    if user_id:
+        db = SessionLocal()
 
-    roles = db.query(
-        models.MasterListTable
-    ).filter(
-        models.MasterListTable.tag_code == roleMaster.tag_code
-    ).all()
+        user = db.query(
+            models.User
+        ).filter(
+            models.User.id == user_id
+        ).first()
 
-    db.close()
+        if user:
+            role = db.query(
+                models.MasterListTable
+            ).filter(
+                models.MasterListTable.id == user.role_id
+            ).first()
+
+            db.close()
+
+            if role and role.value == "Support Staff":
+                return RedirectResponse(
+                    url="/dashboard",
+                    status_code=303
+                )
+        else:
+            db.close()
 
     return templates.TemplateResponse(
         name="register.html",
         request=request,
         context={
-            "roles": roles,
             "error": error
         }
     )
 
 #register_user
 @router.post("/register")
-def register_user(request: Request,
+def register_user(
+    request: Request,
     name: str = Form(...),
     email: str = Form(...),
-    password: str = Form(...),
-    role_id: int = Form(...)
+    password: str = Form(...)
 ):
-
     db = SessionLocal()
 
     existing_user = db.query(
@@ -57,25 +65,40 @@ def register_user(request: Request,
         models.User.email == email
     ).first()
 
-    roleMaster=get_master_by_name(db, "Role")
-
     if existing_user:
-        roles = db.query(
-                models.MasterListTable
-            ).filter(
-                models.MasterListTable.tag_code == roleMaster.tag_code
-            ).all()
-        
         db.close()
 
         return templates.TemplateResponse(
-        name="register.html",
-        request=request,
-        context={
-            "error": "email_exists",
-            "roles": roles
-        }
-    )
+            name="register.html",
+            request=request,
+            context={
+                "error": "email_exists"
+            }
+        )
+
+    # Get the User role
+    role_master = get_master_by_name(db, "Role")
+
+    if not role_master:
+        db.close()
+        raise HTTPException(
+            status_code=500,
+            detail="Role master data not found"
+        )
+
+    user_role = db.query(
+        models.MasterListTable
+    ).filter(
+        models.MasterListTable.tag_code == role_master.tag_code,
+        models.MasterListTable.value == "User"
+    ).first()
+
+    if not user_role:
+        db.close()
+        raise HTTPException(
+            status_code=500,
+            detail="User role not found"
+        )
 
     hashed_password = hash_password(password)
 
@@ -83,20 +106,17 @@ def register_user(request: Request,
         name=name,
         email=email,
         password=hashed_password,
-        role_id=role_id
+        role_id=user_role.id
     )
 
     db.add(user)
     db.commit()
-
     db.close()
 
     return RedirectResponse(
         url="/login",
         status_code=303
-        
     )
-
 
 #login_page
 @router.get("/login")
