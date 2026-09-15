@@ -235,12 +235,7 @@ resolveDesk was developed as a practical Help Desk application to demonstrate:
 
 ---
 
-## Project Status
+## Author
 
-🚧 **Currently under development.**
-
-**Planned Deployment:**
-- Neon PostgreSQL
-- Render
-
-*A live demo link will be added after deployment.*
+**Shri Harshan M**
+[Email](mailto:shriharshancse@gmail.com) • [LinkedIn](https://www.linkedin.com/in/mrshri-harshan/) • [Portfolio](https://harshan-portfolio.onrender.com)
