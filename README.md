@@ -234,8 +234,8 @@ resolveDesk was developed as a practical Help Desk application to demonstrate:
 - Server-side rendering with Jinja2
 
 ---
-
 ## Author
 
 **Shri Harshan M**
-[Email](mailto:shriharshancse@gmail.com) • [LinkedIn](https://www.linkedin.com/in/mrshri-harshan/) • [Portfolio](https://harshan-portfolio.onrender.com)
+
+[![Email](https://skillicons.dev/icons?i=gmail)](mailto:shriharshancse@gmail.com)&nbsp;&nbsp;&nbsp;[![LinkedIn](https://skillicons.dev/icons?i=linkedin)](https://www.linkedin.com/in/mrshri-harshan/)&nbsp;&nbsp;&nbsp;[![Portfolio](https://skillicons.dev/icons?i=vercel)](https://harshan-portfolio.onrender.com)
