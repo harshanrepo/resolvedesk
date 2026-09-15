@@ -90,6 +90,7 @@ def create_ticket(
 
 
 # Assign Ticket
+# Assign Ticket
 @router.post("/admin/tickets/{ticket_id}/assign")
 def assign_ticket(
     request: Request,
@@ -105,16 +106,18 @@ def assign_ticket(
             status_code=303
         )
 
+    # Only Admin can assign tickets
     role = get_user_role(user)
 
-    if role not in ["Admin", "Support Staff"]:
+    if role != "Admin":
         raise HTTPException(
             status_code=403,
-            detail="You do not have permission to assign tickets"
+            detail="Only Admin can assign tickets"
         )
 
     db = SessionLocal()
 
+    # Find ticket
     ticket = db.query(
         models.Ticket
     ).filter(
@@ -128,9 +131,13 @@ def assign_ticket(
             status_code=404,
             detail="Ticket not found"
         )
-    
-    if assigned_to is not None:
 
+    # Allow unassigning the ticket
+    if assigned_to is None:
+        ticket.assigned_to = None
+
+    else:
+        # Find selected staff
         staff = db.query(
             models.User
         ).filter(
@@ -145,6 +152,7 @@ def assign_ticket(
                 detail="Support staff not found"
             )
 
+        # Verify selected user is Support Staff
         staff_role = get_user_role(staff)
 
         if staff_role != "Support Staff":
@@ -155,28 +163,10 @@ def assign_ticket(
                 detail="Only Support Staff can be assigned"
             )
 
-        active_ticket = db.query(
-            models.Ticket
-        ).filter(
-            models.Ticket.assigned_to == staff.id,
-            models.Ticket.status.has(
-                models.MasterListTable.value != "Closed"
-            ),
-            models.Ticket.id != ticket.id
-        ).first()
-
-        if active_ticket:
-            db.close()
-
-            raise HTTPException(
-                status_code=400,
-                detail="This staff member is already working on an active ticket"
-            )
-
-    ticket.assigned_to = assigned_to
+        # Assign ticket
+        ticket.assigned_to = staff.id
 
     db.commit()
-
     db.close()
 
     return RedirectResponse(

@@ -5,7 +5,7 @@ from starlette.middleware.sessions import SessionMiddleware
 import os
 from dotenv import load_dotenv
 from fastapi.staticfiles import StaticFiles
-from routes import auth,dashboard,ticket,master
+from routes import auth,dashboard,ticket,master,user_master
 
 
 load_dotenv()
@@ -16,6 +16,7 @@ app.include_router(auth.router)
 app.include_router(dashboard.router)
 app.include_router(ticket.router)
 app.include_router(master.router)
+app.include_router(user_master.router)
 app.mount("/static", StaticFiles(directory="static"), name="static")
 Base.metadata.create_all(bind=engine)
 app.add_middleware(SessionMiddleware,secret_key=SECRET_KEY)
