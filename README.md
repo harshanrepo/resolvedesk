@@ -1,5 +1,5 @@
 # resolveDesk
-
+[![Live Demo](https://img.shields.io/badge/Live%20Demo-View%20App-brightgreen?style=for-the-badge)](https://resolvedesk-hydk.onrender.com)
 A web-based Ticket Management System built with **FastAPI**, **SQLite**, **SQLAlchemy**, **Jinja2**, **HTML**, and **CSS**.
 
 resolveDesk allows users to create and track support tickets, while Admins manage tickets and Support Staff work on assigned tickets.
