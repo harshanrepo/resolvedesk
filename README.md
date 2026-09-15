@@ -1,77 +1,114 @@
 # resolveDesk
 
-A beginner-friendly Help Desk / Ticket Management web application built with FastAPI, SQLite, SQLAlchemy, Jinja2, HTML, and CSS.
+A web-based Help Desk / Ticket Management System built with FastAPI, SQLite, SQLAlchemy, Jinja2, HTML, and CSS.
+
+resolveDesk allows users to create and track support tickets while Admins manage tickets and Support Staff work on assigned tickets.
 
 ## Features
 
-- User registration and login
-- Session-based authentication
-- Role-based access control
-- Create and manage support tickets
-- Ticket priority and status management
-- Ticket comments
-- Support Staff assigned-ticket management
-- Admin ticket assignment and reassignment
-- Master Data management
-- Responsive dashboard UI
-- Password hashing using bcrypt
+### Authentication
 
-## User Roles
+- User registration
+- Secure password hashing with bcrypt
+- Login and logout using session-based authentication
+- Role-based access control
+- Session-based user authentication
 
 ### User
 
-- Register and login
-- View personal dashboard
-- Create tickets
-- View own tickets
+- Register through the public registration page
+- Create support tickets
+- View their own tickets
 - View ticket details
-- Comment on own tickets
+- Comment on their own tickets
+- Track ticket status and priority
 
 ### Support Staff
 
-- View assigned tickets
+- Login using their account
+- View tickets assigned to them
+- Work on multiple assigned tickets
 - Update ticket status
-- Close assigned tickets
-- Comment on assigned tickets
+- Move tickets through the support workflow
+- Add comments to assigned tickets
 
 ### Admin
 
 - View all tickets
-- Assign and reassign tickets
+- Assign tickets to Support Staff
+- Reassign tickets
+- Assign multiple tickets to the same Support Staff
+- Filter tickets by assigned staff
 - Manage Master Data
+- Manage users through User Master
 
 ## Ticket Workflow
 
 ```text
 User creates ticket
         ↓
-      Open
+Open
         ↓
-Admin assigns ticket
+Admin assigns Support Staff
         ↓
-Support Staff works on ticket
+In Progress
         ↓
-   In Progress
+Resolved
         ↓
-     Resolved
-        ↓
-      Closed
-```
+Closed
 
-## Tech Stack
+A Support Staff member can have multiple tickets assigned at the same time.
 
-- Backend: FastAPI
-- Database: SQLite
-- ORM: SQLAlchemy
-- Templates: Jinja2
-- Frontend: HTML, CSS
-- Authentication: Session / Cookie
-- Password Hashing: bcrypt
-- Environment Variables: python-dotenv
+Master Data
 
-## Project Structure
+The application uses master data for values such as:
 
-```text
+Priority
+Status
+Role
+
+Example:
+
+Priority
+├── Low
+├── Medium
+└── High
+
+Status
+├── Open
+├── In Progress
+├── Resolved
+└── Closed
+
+Role
+├── User
+├── Support Staff
+└── Admin
+Database
+
+Current database:
+
+SQLite
+SQLAlchemy ORM
+
+Main tables:
+
+users
+tickets
+comments
+master_table
+master_list_table
+Tech Stack
+Python
+FastAPI
+SQLAlchemy
+SQLite
+Jinja2
+HTML5
+CSS3
+bcrypt
+Session Authentication
+Project Structure
 resolveDesk/
 │
 ├── main.py
@@ -92,127 +129,123 @@ resolveDesk/
 │   ├── register.html
 │   ├── user_dashboard.html
 │   ├── staff_dashboard.html
-│   ├── my_assigned_tickets.html
 │   ├── ticket_detail.html
-│   └── master.html
+│   └── ...
 │
 ├── static/
-│   ├── base.css
-│   ├── auth.css
-│   ├── dashboard.css
-│   ├── master.css
-│   ├── ticket_detail.css
+│   ├── css/
+│   ├── icons/
 │   └── favicon.ico
 │
 ├── .env
 ├── .gitignore
 ├── requirements.txt
 └── README.md
-```
-
-## Database
-
-The application uses SQLite with SQLAlchemy.
-
-Main tables:
-
-- users
-- tickets
-- comments
-- master_table
-- master_list_table
-
-Master Data is used for values such as:
-
-### Priority
-
-- Low
-- Medium
-- High
-
-### Status
-
-- Open
-- In Progress
-- Resolved
-- Closed
-
-### Role
-
-- User
-- Support Staff
-- Admin
-
-## Installation
+Installation
 
 Clone the repository:
 
-```bash
 git clone <your-github-repository-url>
 cd resolveDesk
-```
 
 Create a virtual environment:
 
-```bash
 python -m venv venv
-```
 
-Activate it on Windows:
+Activate the virtual environment on Windows:
 
-```bash
 venv\Scripts\activate
-```
 
 Install dependencies:
 
-```bash
 pip install -r requirements.txt
-```
 
-Create a `.env` file:
+Create a .env file:
 
-```env
 SECRET_KEY=your-secret-key
-```
 
 Run the application:
 
-```bash
 uvicorn main:app --reload
-```
 
-Open the application:
+Open the application in your browser:
 
-```text
 http://127.0.0.1:8000
-```
+Authentication
 
-## Authentication
+Passwords are never stored as plain text.
 
-resolveDesk uses session-based authentication.
+resolveDesk uses:
 
-After login, the user's ID is stored in the session. The application uses that ID to identify the logged-in user and control access to tickets and dashboard features.
+bcrypt for password hashing
+Session-based authentication
+Role-based authorization
 
-Passwords are never stored as plain text. They are hashed using bcrypt.
+Public registration automatically creates a User account.
 
-## Purpose
+Role selection is not available on the public registration form.
 
-This project was built to understand how a real-world FastAPI web application works, including:
+Admin-controlled user management is used for creating accounts with different roles.
 
-- Authentication
-- Authorization
-- CRUD operations
-- Database relationships
-- Form handling
-- Sessions
-- Role-based access
-- Jinja2 templates
-- Responsive frontend design
-- Admin and staff workflows
+Ticket Assignment
 
-## Status
+Admins can assign tickets to Support Staff.
 
-Completed
+There is no one-ticket-at-a-time restriction.
 
-Built as a learning and portfolio project.
+For example:
+
+Staff A
+├── Ticket #101
+├── Ticket #102
+├── Ticket #103
+└── Ticket #104
+
+All assigned tickets are available to the staff member through the My Assigned Tickets page.
+
+Role-Based Access
+User
+├── Create tickets
+├── View own tickets
+└── Comment on own tickets
+
+Support Staff
+├── View assigned tickets
+├── Work on assigned tickets
+├── Update ticket status
+└── Comment on assigned tickets
+
+Admin
+├── View all tickets
+├── Assign tickets
+├── Reassign tickets
+├── Manage Master Data
+└── Manage Users
+Purpose
+
+resolveDesk was developed as a practical Help Desk application to demonstrate:
+
+Backend web development
+FastAPI development
+Database design
+SQLAlchemy ORM
+Authentication
+Authorization
+Role-based access control
+CRUD operations
+Ticket management
+Master data management
+Server-side rendering with Jinja2
+Project Status
+
+🚧 Currently under development.
+
+Planned Deployment
+Neon PostgreSQL
+Render
+
+A live demo link will be added after deployment.
+
+Author
+
+Developed as a practical Help Desk / Ticket Management project.
