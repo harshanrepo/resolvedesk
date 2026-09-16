@@ -6,7 +6,6 @@ from database import SessionLocal
 import models
 from utils import hash_password
 
-
 router = APIRouter()
 templates = Jinja2Templates(directory="templates")
 
@@ -18,20 +17,16 @@ def get_admin(request: Request, db):
     if not user_id:
         return None
 
-    user = db.query(
-        models.User
-    ).filter(
-        models.User.id == user_id
-    ).first()
+    user = db.query(models.User).filter(models.User.id == user_id).first()
 
     if not user:
         return None
 
-    role = db.query(
-        models.MasterListTable
-    ).filter(
-        models.MasterListTable.id == user.role_id
-    ).first()
+    role = (
+        db.query(models.MasterListTable)
+        .filter(models.MasterListTable.id == user.role_id)
+        .first()
+    )
 
     if not role or role.value != "Admin":
         return None
@@ -40,11 +35,7 @@ def get_admin(request: Request, db):
 
 
 @router.get("/user-master")
-def user_master_page(
-    request: Request,
-    search: str = "",
-    role_filter: str = ""
-):
+def user_master_page(request: Request, search: str = "", role_filter: str = ""):
 
     db = SessionLocal()
 
@@ -54,39 +45,27 @@ def user_master_page(
         db.close()
 
         if not request.session.get("user_id"):
-            return RedirectResponse(
-                url="/login",
-                status_code=303
-            )
+            return RedirectResponse(url="/login", status_code=303)
 
-        return RedirectResponse(
-            url="/dashboard",
-            status_code=303
-        )
-
+        return RedirectResponse(url="/dashboard", status_code=303)
 
     # Get Role master
-    role_master = db.query(
-        models.MasterTable
-    ).filter(
-        models.MasterTable.name == "Role"
-    ).first()
-
+    role_master = (
+        db.query(models.MasterTable).filter(models.MasterTable.name == "Role").first()
+    )
 
     roles = []
 
     if role_master:
 
-        roles = db.query(
-            models.MasterListTable
-        ).filter(
-            models.MasterListTable.tag_code == role_master.tag_code
-        ).all()
-
+        roles = (
+            db.query(models.MasterListTable)
+            .filter(models.MasterListTable.tag_code == role_master.tag_code)
+            .all()
+        )
 
     # Get users
     query = db.query(models.User)
-
 
     # Search
     if search:
@@ -94,41 +73,36 @@ def user_master_page(
         search_value = f"%{search.strip()}%"
 
         query = query.filter(
-            (models.User.name.ilike(search_value)) |
-            (models.User.email.ilike(search_value))
+            (models.User.name.ilike(search_value))
+            | (models.User.email.ilike(search_value))
         )
-
 
     # Role filter
     if role_filter:
 
-        selected_role = db.query(
-            models.MasterListTable
-        ).filter(
-            models.MasterListTable.id == int(role_filter)
-        ).first()
+        selected_role = (
+            db.query(models.MasterListTable)
+            .filter(models.MasterListTable.id == int(role_filter))
+            .first()
+        )
 
         if selected_role:
 
-            query = query.filter(
-                models.User.role_id == selected_role.id
-            )
-
+            query = query.filter(models.User.role_id == selected_role.id)
 
     users = query.all()
 
     db.close()
 
-
     return templates.TemplateResponse(
-        name="user_master.html",
+        name="staff - admin/user_master.html",
         request=request,
         context={
             "users": users,
             "roles": roles,
             "search": search,
-            "role_filter": role_filter
-        }
+            "role_filter": role_filter,
+        },
     )
 
 
@@ -138,7 +112,7 @@ def create_user(
     name: str = Form(...),
     email: str = Form(...),
     password: str = Form(...),
-    role_id: int = Form(...)
+    role_id: int = Form(...),
 ):
 
     db = SessionLocal()
@@ -150,77 +124,45 @@ def create_user(
         db.close()
 
         if not request.session.get("user_id"):
-            return RedirectResponse(
-                url="/login",
-                status_code=303
-            )
+            return RedirectResponse(url="/login", status_code=303)
 
-        return RedirectResponse(
-            url="/dashboard",
-            status_code=303
-        )
-
+        return RedirectResponse(url="/dashboard", status_code=303)
 
     # Check duplicate email
-    existing_user = db.query(
-        models.User
-    ).filter(
-        models.User.email == email
-    ).first()
+    existing_user = db.query(models.User).filter(models.User.email == email).first()
 
     if existing_user:
         db.close()
 
-        return RedirectResponse(
-            url="/user-master?error=email_exists",
-            status_code=303
-        )
-
+        return RedirectResponse(url="/user-master?error=email_exists", status_code=303)
 
     # Make sure selected role exists
-    role = db.query(
-        models.MasterListTable
-    ).filter(
-        models.MasterListTable.id == role_id
-    ).first()
+    role = (
+        db.query(models.MasterListTable)
+        .filter(models.MasterListTable.id == role_id)
+        .first()
+    )
 
     if not role:
         db.close()
 
-        return RedirectResponse(
-            url="/user-master?error=invalid_role",
-            status_code=303
-        )
-
+        return RedirectResponse(url="/user-master?error=invalid_role", status_code=303)
 
     hashed_password = hash_password(password)
 
-
     user = models.User(
-        name=name,
-        email=email,
-        password=hashed_password,
-        role_id=role.id
+        name=name, email=email, password=hashed_password, role_id=role.id
     )
-
 
     db.add(user)
     db.commit()
     db.close()
 
-
-    return RedirectResponse(
-        url="/user-master",
-        status_code=303
-    )
+    return RedirectResponse(url="/user-master", status_code=303)
 
 
 @router.post("/user-master/{user_id}/edit")
-def edit_user(
-    request: Request,
-    user_id: int,
-    role_id: int = Form(...)
-):
+def edit_user(request: Request, user_id: int, role_id: int = Form(...)):
 
     db = SessionLocal()
 
@@ -231,58 +173,58 @@ def edit_user(
         db.close()
 
         if not request.session.get("user_id"):
-            return RedirectResponse(
-                url="/login",
-                status_code=303
-            )
+            return RedirectResponse(url="/login", status_code=303)
 
-        return RedirectResponse(
-            url="/dashboard",
-            status_code=303
-        )
+        return RedirectResponse(url="/dashboard", status_code=303)
 
-
-    user = db.query(
-        models.User
-    ).filter(
-        models.User.id == user_id
-    ).first()
-
+    user = db.query(models.User).filter(models.User.id == user_id).first()
 
     if not user:
 
         db.close()
 
-        return RedirectResponse(
-            url="/user-master",
-            status_code=303
-        )
+        return RedirectResponse(url="/user-master", status_code=303)
 
-
-    role = db.query(
-        models.MasterListTable
-    ).filter(
-        models.MasterListTable.id == role_id
-    ).first()
-
+    role = (
+        db.query(models.MasterListTable)
+        .filter(models.MasterListTable.id == role_id)
+        .first()
+    )
 
     if not role:
 
         db.close()
 
-        return RedirectResponse(
-            url="/user-master",
-            status_code=303
-        )
-
+        return RedirectResponse(url="/user-master", status_code=303)
 
     user.role_id = role.id
 
     db.commit()
     db.close()
 
+    return RedirectResponse(url="/user-master", status_code=303)
 
-    return RedirectResponse(
-        url="/user-master",
-        status_code=303
-    )
+
+@router.post("/user-master/{user_id}/reset-password")
+def reset_password(request: Request, user_id: int, password: str = Form(...)):
+    db = SessionLocal()
+
+    admin = get_admin(request, db)
+
+    if not admin:
+        db.close()
+        if not request.session.get("user_id"):
+            return RedirectResponse(url="/login", status_code=303)
+        return RedirectResponse(url="/dashboard", status_code=303)
+
+    user = db.query(models.User).filter(models.User.id == user_id).first()
+
+    if not user:
+        db.close()
+        return RedirectResponse(url="/user-master", status_code=303)
+
+    user.password = hash_password(password)
+    db.commit()
+    db.close()
+
+    return RedirectResponse(url="/user-master", status_code=303)

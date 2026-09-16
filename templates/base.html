@@ -1,24 +1,47 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="icon" type="image/svg" href="{{ url_for('static', path='icons/favicon.svg') }}">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link
+      rel="icon"
+      type="image/svg"
+      href="{{ url_for('static', path='icons/favicon.svg') }}"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css"
+      integrity="sha512-Fo3rlrZj/k7ujTnHg4CGR2D7kSs0v4LLanw2qksYuRlEzO+tcaEPQogQ0KaoGN26/zrn20ImR1DfuLWnOo7aBA=="
+      crossorigin="anonymous"
+      referrerpolicy="no-referrer"
+    />
 
     <title>{% block title %}resolveDesk{% endblock %}</title>
-    <link rel="stylesheet" href="{{ url_for('static', path='base.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', path='base.css') }}" />
 
-    {% block css %}
-    {% endblock %}
+    {% block css %} {% endblock %} {% block head %} {% endblock %}
+  </head>
 
-    {% block head %}
-    {% endblock %}
-</head>
+  <body>
+    {% block content %} {% endblock %}
 
-<body>
+    <script>
+      document.addEventListener("DOMContentLoaded", function () {
+        const toggleButton = document.getElementById("togglePassword");
+        const passwordInput = document.getElementById("password");
 
-    {% block content %}
-    {% endblock %}
-
-</body>
+        if (toggleButton && passwordInput) {
+          toggleButton.addEventListener("click", function () {
+            if (passwordInput.type === "password") {
+              passwordInput.type = "text";
+              toggleButton.innerHTML = '<i class="fas fa-eye-slash"></i>';
+            } else {
+              passwordInput.type = "password";
+              toggleButton.innerHTML = '<i class="fas fa-eye"></i>';
+            }
+          });
+        }
+      });
+    </script>
+  </body>
 </html>

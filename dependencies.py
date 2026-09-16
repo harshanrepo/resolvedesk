@@ -12,15 +12,12 @@ def get_current_user(request: Request):
 
     db = SessionLocal()
 
-    user = db.query(
-        models.User
-    ).filter(
-        models.User.id == user_id
-    ).first()
+    user = db.query(models.User).filter(models.User.id == user_id).first()
 
     db.close()
 
     return user
+
 
 def get_user_role(user):
 
@@ -29,11 +26,11 @@ def get_user_role(user):
 
     db = SessionLocal()
 
-    role = db.query(
-        models.MasterListTable
-    ).filter(
-        models.MasterListTable.id == user.role_id
-    ).first()
+    role = (
+        db.query(models.MasterListTable)
+        .filter(models.MasterListTable.id == user.role_id)
+        .first()
+    )
 
     db.close()
 
@@ -41,6 +38,7 @@ def get_user_role(user):
         return None
 
     return role.value
+
 
 def require_staff(user):
 

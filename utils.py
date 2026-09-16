@@ -2,12 +2,10 @@ import bcrypt
 import models
 from datetime import datetime, timezone
 
+
 def hash_password(password):
     password_bytes = password.encode("utf-8")
-    hashed_password = bcrypt.hashpw(
-        password_bytes,
-        bcrypt.gensalt()
-    )
+    hashed_password = bcrypt.hashpw(password_bytes, bcrypt.gensalt())
 
     return hashed_password.decode("utf-8")
 
@@ -16,17 +14,11 @@ def verify_password(password, hashed_password):
     password_bytes = password.encode("utf-8")
     hashed_bytes = hashed_password.encode("utf-8")
 
-    return bcrypt.checkpw(
-        password_bytes,
-        hashed_bytes
-    )
+    return bcrypt.checkpw(password_bytes, hashed_bytes)
+
 
 def get_master_by_name(db, name):
-    return db.query(
-        models.MasterTable
-    ).filter(
-        models.MasterTable.name == name
-    ).first()
+    return db.query(models.MasterTable).filter(models.MasterTable.name == name).first()
 
 
 def time_ago(created_at):

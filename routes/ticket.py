@@ -1,38 +1,30 @@
-from fastapi import APIRouter, Request, Form
-from dependencies import get_current_user,get_user_role,require_staff
+from fastapi import APIRouter, Request, Form, HTTPException
 from fastapi.responses import RedirectResponse
-import models
-from sqlalchemy.orm import joinedload
-from database import SessionLocal
 from fastapi.templating import Jinja2Templates
-templates=Jinja2Templates(directory="templates")
-from fastapi import HTTPException
+from sqlalchemy.orm import joinedload
+
+from database import SessionLocal
+from dependencies import get_current_user, get_user_role, require_staff
 from utils import time_ago
+import models
+
+templates = Jinja2Templates(directory="templates")
 
 
 router = APIRouter()
 
 
-#admin_tickets
+# admin_tickets
 @router.get("/admin/tickets")
 def admin_tickets(request: Request):
 
     user = get_current_user(request)
 
     if not user:
-        return RedirectResponse(
-            url="/login",
-            status_code=303
-        )
+        return RedirectResponse(url="/login", status_code=303)
 
     if not require_staff(user):
-        return {
-            "message": "Access denied"
-        }
-
-    return {
-        "message": "Welcome to the staff ticket management"
-    }
+        return {"message": "Access denied"}
 
 
 # create_ticket
@@ -41,33 +33,31 @@ def create_ticket(
     request: Request,
     title: str = Form(...),
     description: str = Form(...),
-    priority_id: int = Form(...)
+    priority_id: int = Form(...),
 ):
 
     user = get_current_user(request)
 
     if not user:
-        return RedirectResponse(
-            url="/login",
-            status_code=303
-        )
+        return RedirectResponse(url="/login", status_code=303)
 
     db = SessionLocal()
 
     # Find the "Open" status from master data
-    open_status = db.query(
-        models.MasterListTable
-    ).filter(
-        models.MasterListTable.tag_code == "T0002",
-        models.MasterListTable.value == "Open"
-    ).first()
+    open_status = (
+        db.query(models.MasterListTable)
+        .filter(
+            models.MasterListTable.tag_code == "T0002",
+            models.MasterListTable.value == "Open",
+        )
+        .first()
+    )
 
     if not open_status:
         db.close()
 
         raise HTTPException(
-            status_code=500,
-            detail="Open status not found in master data"
+            status_code=500, detail="Open status not found in master data"
         )
 
     ticket = models.Ticket(
@@ -75,7 +65,7 @@ def create_ticket(
         description=description,
         priority_id=priority_id,
         status_id=open_status.id,
-        created_by=user.id
+        created_by=user.id,
     )
 
     db.add(ticket)
@@ -83,54 +73,35 @@ def create_ticket(
 
     db.close()
 
-    return RedirectResponse(
-        url="/dashboard",
-        status_code=303
-    )
+    return RedirectResponse(url="/dashboard", status_code=303)
 
 
-# Assign Ticket
 # Assign Ticket
 @router.post("/admin/tickets/{ticket_id}/assign")
 def assign_ticket(
-    request: Request,
-    ticket_id: int,
-    assigned_to: int | None = Form(None)
+    request: Request, ticket_id: int, assigned_to: int | None = Form(None)
 ):
 
     user = get_current_user(request)
 
     if not user:
-        return RedirectResponse(
-            url="/login",
-            status_code=303
-        )
+        return RedirectResponse(url="/login", status_code=303)
 
     # Only Admin can assign tickets
     role = get_user_role(user)
 
     if role != "Admin":
-        raise HTTPException(
-            status_code=403,
-            detail="Only Admin can assign tickets"
-        )
+        raise HTTPException(status_code=403, detail="Only Admin can assign tickets")
 
     db = SessionLocal()
 
     # Find ticket
-    ticket = db.query(
-        models.Ticket
-    ).filter(
-        models.Ticket.id == ticket_id
-    ).first()
+    ticket = db.query(models.Ticket).filter(models.Ticket.id == ticket_id).first()
 
     if not ticket:
         db.close()
 
-        raise HTTPException(
-            status_code=404,
-            detail="Ticket not found"
-        )
+        raise HTTPException(status_code=404, detail="Ticket not found")
 
     # Allow unassigning the ticket
     if assigned_to is None:
@@ -138,19 +109,12 @@ def assign_ticket(
 
     else:
         # Find selected staff
-        staff = db.query(
-            models.User
-        ).filter(
-            models.User.id == assigned_to
-        ).first()
+        staff = db.query(models.User).filter(models.User.id == assigned_to).first()
 
         if not staff:
             db.close()
 
-            raise HTTPException(
-                status_code=404,
-                detail="Support staff not found"
-            )
+            raise HTTPException(status_code=404, detail="Support staff not found")
 
         # Verify selected user is Support Staff
         staff_role = get_user_role(staff)
@@ -159,8 +123,7 @@ def assign_ticket(
             db.close()
 
             raise HTTPException(
-                status_code=400,
-                detail="Only Support Staff can be assigned"
+                status_code=400, detail="Only Support Staff can be assigned"
             )
 
         # Assign ticket
@@ -169,45 +132,35 @@ def assign_ticket(
     db.commit()
     db.close()
 
-    return RedirectResponse(
-        url="/dashboard",
-        status_code=303
-    )
+    return RedirectResponse(url="/dashboard", status_code=303)
+
 
 # Ticket Details
 @router.get("/tickets/{ticket_id}")
-def ticket_detail(
-    request: Request,
-    ticket_id: int
-):
+def ticket_detail(request: Request, ticket_id: int):
 
     user = get_current_user(request)
 
     if not user:
-        return RedirectResponse(
-            url="/login",
-            status_code=303
-        )
+        return RedirectResponse(url="/login", status_code=303)
 
     db = SessionLocal()
 
-    ticket = db.query(
-    models.Ticket
-    ).options(
-        joinedload(models.Ticket.creator),
-        joinedload(models.Ticket.priority),
-        joinedload(models.Ticket.status),
-        joinedload(models.Ticket.assignee)
-    ).filter(
-        models.Ticket.id == ticket_id
-    ).first()
+    ticket = (
+        db.query(models.Ticket)
+        .options(
+            joinedload(models.Ticket.creator),
+            joinedload(models.Ticket.priority),
+            joinedload(models.Ticket.status),
+            joinedload(models.Ticket.assignee),
+        )
+        .filter(models.Ticket.id == ticket_id)
+        .first()
+    )
 
     if not ticket:
         db.close()
-        raise HTTPException(
-            status_code=404,
-            detail="Ticket not found"
-        )
+        raise HTTPException(status_code=404, detail="Ticket not found")
 
     role = get_user_role(user)
 
@@ -220,8 +173,7 @@ def ticket_detail(
         else:
             db.close()
             raise HTTPException(
-                status_code=403,
-                detail="You do not have permission to view this ticket"
+                status_code=403, detail="You do not have permission to view this ticket"
             )
 
     elif role == "Support Staff":
@@ -233,18 +185,15 @@ def ticket_detail(
     elif role == "Admin":
         can_comment = True
 
-    comments = db.query(
-    models.Comment
-    ).options(
-        joinedload(models.Comment.user)
-    ).filter(
-        models.Comment.ticket_id == ticket.id
-    ).order_by(
-        models.Comment.created_at.asc()
-    ).all()
+    comments = (
+        db.query(models.Comment)
+        .options(joinedload(models.Comment.user))
+        .filter(models.Comment.ticket_id == ticket.id)
+        .order_by(models.Comment.created_at.asc())
+        .all()
+    )
 
     db.close()
-
 
     # Admin and Support Staff can view any ticket
     return templates.TemplateResponse(
@@ -253,52 +202,36 @@ def ticket_detail(
         context={
             "user": user,
             "ticket": ticket,
-            "comments":comments,
+            "comments": comments,
             "can_comment": can_comment,
             "comment_message": comment_message,
-            "time_ago": time_ago
-        }
+            "time_ago": time_ago,
+        },
     )
+
 
 # Add Comment
 @router.post("/tickets/{ticket_id}/comments")
-def add_comment(
-    request: Request,
-    ticket_id: int,
-    comment: str = Form(...)
-):
+def add_comment(request: Request, ticket_id: int, comment: str = Form(...)):
 
     user = get_current_user(request)
 
     if not user:
-        return RedirectResponse(
-            url="/login",
-            status_code=303
-        )
+        return RedirectResponse(url="/login", status_code=303)
 
     comment = comment.strip()
 
     if not comment:
-        raise HTTPException(
-            status_code=400,
-            detail="Comment cannot be empty"
-        )
+        raise HTTPException(status_code=400, detail="Comment cannot be empty")
 
     db = SessionLocal()
 
-    ticket = db.query(
-        models.Ticket
-    ).filter(
-        models.Ticket.id == ticket_id
-    ).first()
+    ticket = db.query(models.Ticket).filter(models.Ticket.id == ticket_id).first()
 
     if not ticket:
         db.close()
 
-        raise HTTPException(
-            status_code=404,
-            detail="Ticket not found"
-        )
+        raise HTTPException(status_code=404, detail="Ticket not found")
 
     # Normal user can comment only on their own ticket
     role = get_user_role(user)
@@ -308,7 +241,7 @@ def add_comment(
             db.close()
             raise HTTPException(
                 status_code=403,
-                detail="You do not have permission to comment on this ticket"
+                detail="You do not have permission to comment on this ticket",
             )
 
     elif role == "Support Staff":
@@ -316,42 +249,31 @@ def add_comment(
             db.close()
             raise HTTPException(
                 status_code=403,
-                detail="You can only comment on tickets assigned to you"
+                detail="You can only comment on tickets assigned to you",
             )
 
     elif role == "Admin":
-            pass
+        pass
 
     else:
         db.close()
         raise HTTPException(
-            status_code=403,
-            detail="You do not have permission to comment"
+            status_code=403, detail="You do not have permission to comment"
         )
 
-    new_comment = models.Comment(
-        ticket_id=ticket.id,
-        user_id=user.id,
-        comment=comment
-    )
+    new_comment = models.Comment(ticket_id=ticket.id, user_id=user.id, comment=comment)
 
     db.add(new_comment)
     db.commit()
 
     db.close()
 
-    return RedirectResponse(
-        url=f"/tickets/{ticket_id}",
-        status_code=303
-    )
+    return RedirectResponse(url=f"/tickets/{ticket_id}", status_code=303)
 
-#change status
+
+# change status
 @router.post("/admin/tickets/{ticket_id}/status")
-def update_ticket_status(
-    request: Request,
-    ticket_id: int,
-    status_id: int = Form(...)
-):
+def update_ticket_status(request: Request, ticket_id: int, status_id: int = Form(...)):
     user = get_current_user(request)
 
     if not user:
@@ -361,53 +283,47 @@ def update_ticket_status(
 
     if role not in ["Admin", "Support Staff"]:
         raise HTTPException(
-            status_code=403,
-            detail="You do not have permission to change ticket status"
+            status_code=403, detail="You do not have permission to change ticket status"
         )
 
     db = SessionLocal()
 
-    ticket = db.query(models.Ticket).filter(
-        models.Ticket.id == ticket_id
-    ).first()
+    ticket = db.query(models.Ticket).filter(models.Ticket.id == ticket_id).first()
 
     if not ticket:
         db.close()
-        raise HTTPException(
-            status_code=404,
-            detail="Ticket not found"
-        )
+        raise HTTPException(status_code=404, detail="Ticket not found")
 
-    status = db.query(
-        models.MasterListTable
-    ).filter(
-        models.MasterListTable.id == status_id,
-        models.MasterListTable.tag_code == "T0002"
-    ).first()
+    status = (
+        db.query(models.MasterListTable)
+        .filter(
+            models.MasterListTable.id == status_id,
+            models.MasterListTable.tag_code == "T0002",
+        )
+        .first()
+    )
 
     if not status:
         db.close()
-        raise HTTPException(
-            status_code=400,
-            detail="Invalid status"
-        )
+        raise HTTPException(status_code=400, detail="Invalid status")
 
-    current_status = db.query(models.MasterListTable).filter(models.MasterListTable.id == ticket.status_id).first()
-    
+    current_status = (
+        db.query(models.MasterListTable)
+        .filter(models.MasterListTable.id == ticket.status_id)
+        .first()
+    )
+
     if status.value == "Closed":
         if current_status.value != "Resolved":
             db.close()
             raise HTTPException(
                 status_code=400,
-                detail="Ticket must be Resolved before it can be Closed"
+                detail="Ticket must be Resolved before it can be Closed",
             )
 
     ticket.status_id = status.id
-    
+
     db.commit()
     db.close()
 
-    return RedirectResponse(
-        "/dashboard",
-        status_code=303
-    )
+    return RedirectResponse("/dashboard", status_code=303)
