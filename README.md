@@ -4,7 +4,7 @@
 
 A web-based Ticket Management System built with **FastAPI**, **SQLite**, **SQLAlchemy**, **Jinja2**, **HTML**, and **CSS**.
 
-resolveDesk allows users to create and track support tickets, while Admins manage tickets and Support Staff work on assigned tickets.
+resolveDesk lets Users create and track support tickets, Admins manage tickets and users, and Support Staff work through tickets assigned to them.
 
 ---
 
@@ -15,13 +15,12 @@ resolveDesk allows users to create and track support tickets, while Admins manag
 - [Master Data](#master-data)
 - [Database](#database)
 - [Tech Stack](#tech-stack)
-- [Project Structure](#project-structure)
 - [Installation](#installation)
 - [Authentication](#authentication)
 - [Ticket Assignment](#ticket-assignment)
 - [Role-Based Access](#role-based-access)
+- [Screenshots](#screenshots)
 - [Purpose](#purpose)
-- [Project Status](#project-status)
 - [Author](#author)
 
 ---
@@ -31,34 +30,28 @@ resolveDesk allows users to create and track support tickets, while Admins manag
 ### Authentication
 - User registration
 - Secure password hashing with bcrypt
-- Login and logout using session-based authentication
+- Session-based login/logout
 - Role-based access control
-- Session-based user authentication
 
 ### User
 - Register through the public registration page
 - Create support tickets
-- View their own tickets
-- View ticket details
-- Comment on their own tickets
+- View own tickets and their details
+- Comment on own tickets
 - Track ticket status and priority
 
 ### Support Staff
-- Login using their account
 - View tickets assigned to them
-- Work on multiple assigned tickets
+- Work on multiple assigned tickets at once
 - Update ticket status
-- Move tickets through the support workflow
-- Add comments to assigned tickets
+- Comment on assigned tickets
 
 ### Admin
 - View all tickets
-- Assign tickets to Support Staff
-- Reassign tickets
-- Assign multiple tickets to the same Support Staff
+- Assign and reassign tickets to Support Staff
 - Filter tickets by assigned staff
-- Manage Master Data
-- Manage users through User Master
+- Manage Master Data (priorities, statuses, roles)
+- Manage users via User Master
 
 ---
 
@@ -84,8 +77,6 @@ A Support Staff member can have multiple tickets assigned at the same time.
 
 ## Master Data
 
-The application uses master data for values such as:
-
 | Category | Values |
 |---|---|
 | **Priority** | Low, Medium, High |
@@ -96,33 +87,18 @@ The application uses master data for values such as:
 
 ## Database
 
-**Current database:**
-- SQLite
-- SQLAlchemy ORM
+- **Engine:** SQLite
+- **ORM:** SQLAlchemy
 
-**Main tables:**
-- `users`
-- `tickets`
-- `comments`
-- `master_table`
-- `master_list_table`
+**Tables:** `users`, `tickets`, `comments`, `master_table`, `master_list_table`
 
 ---
 
 ## Tech Stack
 
-- Python
-- FastAPI
-- SQLAlchemy
-- SQLite
-- Jinja2
-- HTML5
-- CSS3
-- bcrypt
-- Session Authentication
+Python · FastAPI · SQLAlchemy · SQLite · Jinja2 · HTML5 · CSS3 · bcrypt · Session Authentication
 
 ---
-
 
 ## Installation
 
@@ -137,9 +113,13 @@ The application uses master data for values such as:
    python -m venv venv
 ```
 
-3. **Activate the virtual environment (Windows)**
+3. **Activate the virtual environment**
 ```bash
+   # Windows
    venv\Scripts\activate
+
+   # macOS / Linux
+   source venv/bin/activate
 ```
 
 4. **Install dependencies**
@@ -150,6 +130,7 @@ The application uses master data for values such as:
 5. **Create a `.env` file**
 ```env
    SECRET_KEY=your-secret-key
+   DATABASE_URL=sqlite:///./resolveDesk.db
 ```
 
 6. **Run the application**
@@ -157,10 +138,9 @@ The application uses master data for values such as:
    uvicorn main:app --reload
 ```
 
-7. **Open the application in your browser**
-```
+7. **Open in your browser**
    http://127.0.0.1:8000
-```
+
 
 ---
 
@@ -168,20 +148,18 @@ The application uses master data for values such as:
 
 Passwords are never stored as plain text.
 
-resolveDesk uses:
 - **bcrypt** for password hashing
-- **Session-based authentication**
-- **Role-based authorization**
+- **Session-based** authentication
+- **Role-based** authorization
 
-Public registration automatically creates a **User** account. Role selection is not available on the public registration form — admin-controlled user management is used for creating accounts with different roles.
+Public registration always creates a **User** account. Accounts with other roles (Support Staff, Admin) are created through admin-controlled User Master, not the public form.
 
 ---
 
 ## Ticket Assignment
 
-Admins can assign tickets to Support Staff. There is no one-ticket-at-a-time restriction.
+Admins can assign tickets to Support Staff with no one-ticket-at-a-time limit:
 
-**Example:**
 ```text
 Staff A
 ├── Ticket #101
@@ -190,7 +168,7 @@ Staff A
 └── Ticket #104
 ```
 
-All assigned tickets are available to the staff member through the **My Assigned Tickets** page.
+All tickets assigned to a staff member appear on their **My Assigned Tickets** page.
 
 ---
 
@@ -204,36 +182,29 @@ User
 
 Support Staff
 ├── View assigned tickets
-├── Work on assigned tickets
 ├── Update ticket status
 └── Comment on assigned tickets
 
 Admin
 ├── View all tickets
-├── Assign tickets
-├── Reassign tickets
+├── Assign / reassign tickets
 ├── Manage Master Data
 └── Manage Users
 ```
 
----
-
 ## Purpose
 
-resolveDesk was developed as a practical Help Desk application to demonstrate:
+resolveDesk was built as a practical Help Desk application to demonstrate:
 
-- Backend web development
-- FastAPI development
-- Database design
-- SQLAlchemy ORM
-- Authentication & Authorization
-- Role-based access control
-- CRUD operations
-- Ticket management
+- FastAPI backend development
+- Database design with SQLAlchemy ORM
+- Authentication & role-based authorization
+- CRUD operations and ticket workflow management
 - Master data management
 - Server-side rendering with Jinja2
 
 ---
+
 ## Author
 
 **Shri Harshan M**
