@@ -19,7 +19,6 @@ resolveDesk lets Users create and track support tickets, Admins manage tickets a
 - [Authentication](#authentication)
 - [Ticket Assignment](#ticket-assignment)
 - [Role-Based Access](#role-based-access)
-- [Screenshots](#screenshots)
 - [Purpose](#purpose)
 - [Author](#author)
 
