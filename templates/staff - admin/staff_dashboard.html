@@ -151,7 +151,7 @@ endblock %} {% block css %}
             <select name="status">
               <option value="" disabled selected hidden>All Status</option>
               {% for status in statuses %}
-              <option value="{{ status.value }}" {% if status_filter == status.value %}selected{% endif %}>
+              <option value="{{ status.value }}" {% if status_filter==status.value %}selected{% endif %}>
                 {{ status.value }}
               </option>
               {% endfor %}
@@ -163,7 +163,7 @@ endblock %} {% block css %}
             <select name="priority_id">
               <option value="" disabled selected hidden>All Priority</option>
               {% for priority in priorities %}
-              <option value="{{ priority.id }}"  {% if priority_filter == priority.id %}selected{% endif %}>>
+              <option value="{{ priority.id }}" {% if priority_filter==priority.id %}selected{% endif %}>>
                 {{ priority.value }}
               </option>
               {% endfor %}
@@ -176,7 +176,7 @@ endblock %} {% block css %}
             <select name="assigned_to">
               <option value="">All Staff</option>
               {% for staff in support_staff %}
-              <option value="{{ staff.id }}"  {% if assigned_to_filter == staff.id %}selected{% endif %}>>
+              <option value="{{ staff.id }}" {% if assigned_to_filter==staff.id %}selected{% endif %}>>
                 {{ staff.name }}
               </option>
               {% endfor %}
@@ -251,7 +251,7 @@ endblock %} {% block css %}
                       <option value="">Not Assigned</option>
 
                       {% for staff in available_staff_by_ticket[ticket.id] %}
-                      <option value="{{ staff.id }}" {% if ticket.assigned_to=""="staff.id" %}selected{% endif %}>
+                      <option value="{{ staff.id }}" {% if ticket.assigned_to==staff.id %}selected{% endif %}>
                         {{ staff.name }}
                       </option>
                       {% endfor %}
