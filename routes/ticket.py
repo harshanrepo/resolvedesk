@@ -197,7 +197,7 @@ def ticket_detail(request: Request, ticket_id: int):
 
     # Admin and Support Staff can view any ticket
     return templates.TemplateResponse(
-        name="ticket_detail.html",
+        name="staff - admin/ticket_detail.html",
         request=request,
         context={
             "user": user,

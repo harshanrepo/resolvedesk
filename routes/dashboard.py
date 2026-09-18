@@ -305,7 +305,7 @@ def my_assigned_tickets(
     db.close()
 
     return templates.TemplateResponse(
-        name="my_assigned_tickets.html",
+        name="staff - admin/my_assigned_tickets.html",
         request=request,
         context={
             "user": user,
