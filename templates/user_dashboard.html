@@ -167,22 +167,11 @@
               <option value="" disabled selected hidden>All Status</option>
 
               {% for status in statuses %}
-
               <option
                 value="{{ status.value }}"
-                {%
-                if
-                status_filter=""
-                ="status.value"
-                %}
-                selected
-                {%
-                endif
-                %}
-              >
+              {% if status_filter == status.value %}selected {% endif %}>
                 {{ status.value }}
               </option>
-
               {% endfor %}
             </select>
           </div>
@@ -193,23 +182,11 @@
               <option value="" disabled selected hidden>All Priorities</option>
 
               {% for priority in priorities %}
-
-              <option
-                value="{{ priority.id }}"
-                {%
-                if
-                priority_filter=""
-                ="priority.id"
-                %}
-                selected
-                {%
-                endif
-                %}
-              >
+              <option value="{{ priority.id }}" {% if priority_filter == priority.id %}selected {% endif %}>
                 {{ priority.value }}
-              </option>
-
+                </option>
               {% endfor %}
+
             </select>
           </div>
 
