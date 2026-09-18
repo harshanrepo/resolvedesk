@@ -1,6 +1,6 @@
 # resolveDesk
 
-[![Live Demo](https://img.shields.io/badge/Live%20Demo-View%20App-brightgreen?style=for-the-badge)](https://resolvedesk-hydk.onrender.com)
+🚧 **Currently under testing and cleanup.**
 
 A web-based Ticket Management System built with **FastAPI**, **SQLite**, **SQLAlchemy**, **Jinja2**, **HTML**, and **CSS**.
 
