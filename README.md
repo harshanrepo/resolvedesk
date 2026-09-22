@@ -81,6 +81,7 @@ A Support Staff member can have multiple tickets assigned at the same time.
 | **Priority** | Low, Medium, High |
 | **Status** | Open, In Progress, Resolved, Closed |
 | **Role** | User, Support Staff, Admin |
+| **Ticket Type** | Software, Hardware |
 
 ---
 
