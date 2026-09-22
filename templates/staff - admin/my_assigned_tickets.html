@@ -125,7 +125,7 @@ endblock %} {% block css %}
             <option value="" disabled selected hidden>All Status</option>
 
             {% for status in statuses %}
-            <option value="{{ status.value }}" {% if status_filter=="status.value" %}selected{% endif %}>
+            <option value="{{ status.value }}" {% if status_filter == status.value %}selected{% endif %}>
               {{ status.value }}
             </option>
             {% endfor %}
@@ -139,8 +139,22 @@ endblock %} {% block css %}
             <option value="" disabled selected hidden>All Priority</option>
 
             {% for priority in priorities %}
-            <option value="{{ priority.id }}" {% if priority_filter=="priority.id" %}selected{% endif %}>
+            <option value="{{ priority.id }}" {% if priority_filter == priority.id %}selected{% endif %}>
               {{ priority.value }}
+            </option>
+            {% endfor %}
+          </select>
+        </div>
+
+        <div class="filter-group">
+          <label>Ticket Type</label>
+
+          <select name="ticket_type_id">
+            <option value="" disabled selected hidden>All Ticket Types</option>
+
+            {% for ticket_type in ticket_types %}
+            <option value="{{ ticket_type.id }}" {% if ticket_type_filter == ticket_type.id %}selected{% endif %}>
+              {{ ticket_type.value }}
             </option>
             {% endfor %}
           </select>
@@ -166,6 +180,7 @@ endblock %} {% block css %}
               <th>ID</th>
               <th>Title</th>
               <th>Created By</th>
+              <th>Ticket Type</th>
               <th>Priority</th>
               <th>Status</th>
               <th>Created At</th>
@@ -188,6 +203,12 @@ endblock %} {% block css %}
               </td>
 
               <td>{{ ticket.creator.name }}</td>
+
+              <td>
+                <span class="ticket-type-badge">
+                  {{ ticket.ticket_type.value }}
+                </span>
+              </td>
 
               <td>
                 <span class="priority-badge priority-{{ ticket.priority.value | lower }}">

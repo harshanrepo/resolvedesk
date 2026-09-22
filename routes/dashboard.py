@@ -18,6 +18,7 @@ def dashboard(
     search: str | None = None,
     status: str | None = None,
     priority_id: int | None = None,
+    ticket_type_id: int | None = None,
     assigned_to: str | None = None,
 ):
     user = get_current_user(request)
@@ -35,21 +36,29 @@ def dashboard(
                 joinedload(models.Ticket.priority),
                 joinedload(models.Ticket.status),
                 joinedload(models.Ticket.assignee),
+                joinedload(models.Ticket.ticket_type),  
             )
             .filter(models.Ticket.created_by == user.id)
         )
 
-        roleMaster = get_master_by_name(db, "Priority")
+        priority_master = get_master_by_name(db, "Priority")
         status_master = get_master_by_name(db, "Status")
+        ticket_type_master = get_master_by_name(db, "Ticket Type")
+        
 
         priorities = (
             db.query(models.MasterListTable)
-            .filter(models.MasterListTable.tag_code == roleMaster.tag_code)
+            .filter(models.MasterListTable.tag_code == priority_master.tag_code)
             .all()
         )
         statuses = (
             db.query(models.MasterListTable)
             .filter(models.MasterListTable.tag_code == status_master.tag_code)
+            .all()
+        )
+        ticket_types = (
+            db.query(models.MasterListTable)
+            .filter(models.MasterListTable.tag_code == ticket_type_master.tag_code)
             .all()
         )
 
@@ -72,6 +81,9 @@ def dashboard(
         if priority_id:
             query = query.filter(models.Ticket.priority_id == priority_id)
 
+        if ticket_type_id:
+                query = query.filter(models.Ticket.ticket_type_id == ticket_type_id)
+
         tickets = query.all()
         total_tickets = len(tickets)
         open_tickets = sum(1 for ticket in tickets if ticket.status.value == "Open")
@@ -92,6 +104,8 @@ def dashboard(
                 "tickets": tickets,
                 "priorities": priorities,
                 "statuses": statuses,
+                "ticket_types": ticket_types,
+                "ticket_type_filter": ticket_type_id,
                 "search": search,
                 "status_filter": status,
                 "priority_filter": priority_id,
@@ -111,6 +125,7 @@ def dashboard(
         db = SessionLocal()
         priority_master = get_master_by_name(db, "Priority")
         status_master = get_master_by_name(db, "Status")
+        ticket_type_master = get_master_by_name(db, "Ticket Type")
 
         priorities = (
             db.query(models.MasterListTable)
@@ -122,12 +137,18 @@ def dashboard(
             .filter(models.MasterListTable.tag_code == status_master.tag_code)
             .all()
         )
+        ticket_types = (
+            db.query(models.MasterListTable)
+            .filter(models.MasterListTable.tag_code == ticket_type_master.tag_code)
+            .all()
+        )
 
         query = db.query(models.Ticket).options(
             joinedload(models.Ticket.creator),
             joinedload(models.Ticket.priority),
             joinedload(models.Ticket.status),
             joinedload(models.Ticket.assignee),
+            joinedload(models.Ticket.ticket_type),
         )
 
         # Search by Ticket ID, Title or Creator
@@ -153,6 +174,10 @@ def dashboard(
         # Filter by Priority
         if priority_id:
             query = query.filter(models.Ticket.priority_id == priority_id)
+
+        # Filter by Ticket Type
+        if ticket_type_id:
+            query = query.filter(models.Ticket.ticket_type_id == ticket_type_id)
 
         # Filter by Assigned To (only for Admin)
         if assigned_to and role == "Admin":
@@ -194,10 +219,12 @@ def dashboard(
                 "available_staff_by_ticket": available_staff_by_ticket,
                 "statuses": statuses,
                 "priorities": priorities,
+                "ticket_types": ticket_types,
                 "role": role,
                 "search": search,
                 "status_filter": status,
                 "priority_filter": priority_id,
+                "ticket_type_filter": ticket_type_id,
                 "support_staff": support_staff,
                 "assigned_to_filter": assigned_to,
                 "total_tickets": total_tickets,
@@ -220,7 +247,8 @@ def my_assigned_tickets(
     request: Request,
     search: str | None = None,
     status: str | None = None,
-    priority_id: str | None = None,
+    priority_id: int | None = None,
+    ticket_type_id: int | None = None,
 ):
     user = get_current_user(request)
     if not user:
@@ -243,6 +271,7 @@ def my_assigned_tickets(
             joinedload(models.Ticket.creator),
             joinedload(models.Ticket.priority),
             joinedload(models.Ticket.status),
+            joinedload(models.Ticket.ticket_type),
         )
         .filter(models.Ticket.assigned_to == user.id)
     )
@@ -275,6 +304,7 @@ def my_assigned_tickets(
     priority_master = get_master_by_name(db, "Priority")
 
     status_master = get_master_by_name(db, "Status")
+    ticket_type_master = get_master_by_name(db, "Ticket Type")
 
     priorities = (
         db.query(models.MasterListTable)
@@ -285,6 +315,11 @@ def my_assigned_tickets(
     statuses = (
         db.query(models.MasterListTable)
         .filter(models.MasterListTable.tag_code == status_master.tag_code)
+        .all()
+    )
+    ticket_types = (
+        db.query(models.MasterListTable)
+        .filter(models.MasterListTable.tag_code == ticket_type_master.tag_code)
         .all()
     )
 
@@ -312,9 +347,11 @@ def my_assigned_tickets(
             "tickets": tickets,
             "priorities": priorities,
             "statuses": statuses,
+            "ticket_types": ticket_types,
             "search": search,
             "status_filter": status,
             "priority_filter": priority_id,
+            "ticket_type_filter": ticket_type_id,
             "total_tickets": total_tickets,
             "open_tickets": open_tickets,
             "in_progress_tickets": in_progress_tickets,

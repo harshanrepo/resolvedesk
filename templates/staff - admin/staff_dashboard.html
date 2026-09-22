@@ -170,6 +170,18 @@ endblock %} {% block css %}
             </select>
           </div>
 
+          <div class="filter-group">
+            <label>Ticket Type</label>
+            <select name="ticket_type_id">
+              <option value="" disabled selected hidden>All Ticket Types</option>
+              {% for ticket_type in ticket_types %}
+              <option value="{{ ticket_type.id }}" {% if ticket_type_filter == ticket_type.id %}selected{% endif %}>
+                {{ ticket_type.value }}
+              </option>
+              {% endfor %}
+            </select>
+          </div>
+
           {% if role == "Admin" %}
           <div class="filter-group">
             <label>Staff</label>
@@ -203,6 +215,7 @@ endblock %} {% block css %}
                 <th>ID</th>
                 <th>Title</th>
                 <th>Created By</th>
+                <th>Ticket Type</th>
                 <th>Priority</th>
                 <th>Status</th>
                 <th>Assigned To</th>
@@ -227,6 +240,13 @@ endblock %} {% block css %}
 
                 <!-- Created By -->
                 <td>{{ ticket.creator.name }}</td>
+
+                <!-- Ticket Type -->
+                <td>
+                  <span class="ticket-type-badge">
+                    {{ ticket.ticket_type.value }}
+                  </span>
+                </td>
 
                 <!-- Priority -->
                 <td>

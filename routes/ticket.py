@@ -2,7 +2,7 @@ from fastapi import APIRouter, Request, Form, HTTPException
 from fastapi.responses import RedirectResponse
 from fastapi.templating import Jinja2Templates
 from sqlalchemy.orm import joinedload
-
+from utils import get_master_by_name
 from database import SessionLocal
 from dependencies import get_current_user, get_user_role, require_staff
 from utils import time_ago
@@ -34,6 +34,7 @@ def create_ticket(
     title: str = Form(...),
     description: str = Form(...),
     priority_id: int = Form(...),
+    ticket_type_id: int = Form(...),
 ):
 
     user = get_current_user(request)
@@ -43,15 +44,15 @@ def create_ticket(
 
     db = SessionLocal()
 
+
     # Find the "Open" status from master data
+    priority_master = get_master_by_name(db, "Priority")
     open_status = (
-        db.query(models.MasterListTable)
-        .filter(
-            models.MasterListTable.tag_code == "T0002",
-            models.MasterListTable.value == "Open",
-        )
-        .first()
-    )
+    db.query(models.MasterListTable)
+    .filter(
+        models.MasterListTable.tag_code == "T0002",
+        models.MasterListTable.value == "Open",
+    )   .first())
 
     if not open_status:
         db.close()
@@ -65,6 +66,7 @@ def create_ticket(
         description=description,
         priority_id=priority_id,
         status_id=open_status.id,
+        ticket_type_id=ticket_type_id,
         created_by=user.id,
     )
 
@@ -153,6 +155,7 @@ def ticket_detail(request: Request, ticket_id: int):
             joinedload(models.Ticket.priority),
             joinedload(models.Ticket.status),
             joinedload(models.Ticket.assignee),
+            joinedload(models.Ticket.ticket_type),
         )
         .filter(models.Ticket.id == ticket_id)
         .first()
